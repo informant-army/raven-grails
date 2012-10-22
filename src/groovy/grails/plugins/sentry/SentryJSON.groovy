@@ -1,38 +1,56 @@
 package grails.plugins.sentry
 
-import java.net.InetAddress
-import java.net.UnknownHostException
 import org.codehaus.groovy.grails.web.json.*
 import net.kencochrane.sentry.RavenUtils
+import net.kencochrane.sentry.RavenConfig
 
 /*
  * http://sentry.readthedocs.org/en/latest/developer/interfaces/index.html
  */
 class SentryJSON {
 
-    public SentryJSON() {
+    private RavenConfig config
+
+    public SentryJSON(RavenConfig config) {
+        this.config = config
     }
 
-    String buildJSON(String message, String timestamp, String loggerClass, int logLevel, String culprit, Throwable exception) {
-        JSONObject json = new JSONObject([
-            event_id: RavenUtils.getRandomUUID(),
-            //project: project, // lipper
-            //server_name: server_name, // app.lipper.com.br
-            //tags: tags, // [grails_version: 1.3.9]
+    /*
+     * Main JSON
+     * {
+     * "event_id": "fc6d8c0c43fc4630ad850ee518f1b9d0",
+     * "project": "default",
+     * "culprit": "my.module.function_name",
+     * "timestamp": "2011-05-02T17:41:36",
+     * "message": "SyntaxError: Wattttt!",
+     * "tags": {
+     *     "ios_version": "4.0"
+     * },
+     * "sentry.interfaces.Exception": {
+     *     "type": "SyntaxError":
+     *     "value": "Wattttt!",
+     *     "module": "__builtins__"
+     * }
+     */
+    String build(String message, String timestamp, String loggerClass, int logLevel, String culprit, Throwable exception) {
+        JSONObject obj = new JSONObject([
+            event_id: RavenUtils.getRandomUUID(), //Hexadecimal string representing a uuid4 value.
+            checksum: RavenUtils.calculateChecksum(message),
             timestamp: timestamp,
             message: message,
-            checksum: RavenUtils.calculateChecksum(message),
+            project: this.config.getProjectId(),
             level: logLevel,
-            logger: loggerClass
+            logger: loggerClass,
+            server_name: RavenUtils.getHostname()
         ])
-        if (exception) {
-            json.put('culprit', determineCulprit(exception))
-            json.put('sentry.interfaces.Exception', buildException(exception))
-            json.put('sentry.interfaces.Stacktrace', buildStacktrace(exception))
+        if (exception == null) {
+            obj.put("culprit", culprit)
         } else {
-            json.put('culprit', culprit)
+            obj.put("culprit", determineCulprit(exception))
+            obj.put("sentry.interfaces.Exception", buildException(exception))
+            obj.put("sentry.interfaces.Stacktrace", buildStacktrace(exception))
         }
-        return json.toString()
+        return obj.toString()
     }
 
     /*
@@ -73,56 +91,43 @@ class SentryJSON {
      * }]
      * }
      */
-   def buildStacktrace(Throwable exception) {
+    JSONObject buildStacktrace(Throwable exception) {
         JSONArray array = new JSONArray()
         Throwable cause = exception
         while (cause != null) {
             StackTraceElement[] elements = cause.getStackTrace()
-            elements.eachWithIndex() { element, index ->
+            elements.eachWithIndex { element, index -> 
                 if (index == 0) {
-                    String msg = "Caused by: ${cause.getClass().getName()}"
+                    String msg = "Caused by: " + cause.getClass().getName()
                     if (cause.getMessage() != null) {
-                        msg += " (\"${cause.getMessage()}\")"
+                        msg += " (\"" + cause.getMessage() + "\")"
                     }
-                    JSONObject causedByFrame = new JSONObject()
-                    causedByFrame.put('filename', msg)
-                    causedByFrame.put('lineno', -1)
+                    JSONObject causedByFrame = new JSONObject([
+                        filename: msg,
+                        lineno: -1
+                    ])
                     array.add(causedByFrame)
                 }
-
-                JSONObject frame = new JSONObject()
-                frame.put('filename', element.getClassName())
-                frame.put('function', element.getMethodName())
-                frame.put('lineno', element.getLineNumber())
+                JSONObject frame = new JSONObject([
+                    filename: element.getClassName(),
+                    function: element.getMethodName(),
+                    lineno: element.getLineNumber()
+                ])
                 array.add(frame)
             }
             cause = cause.getCause()
         }
-
-        JSONObject stacktrace = new JSONObject()
-        stacktrace.put('frames', array)
-        return stacktrace
+        return new JSONObject([frames: array])
     }
 
-    def determineCulprit(Throwable exception) {
+    String determineCulprit(Throwable exception) {
         Throwable cause = exception
         String culprit = null
-            StackTraceElement[] elements = cause.getStackTrace()
-            if (elements.length > 0) {
-                StackTraceElement trace = elements[0]
-                culprit = trace.getClassName() + "." + trace.getMethodName()
-            }
-        return culprit
-    }
-
-    private String getHostname() {
-        String hostname;
-        try {
-            hostname = InetAddress.getLocalHost().getCanonicalHostName();
-        } catch (UnknownHostException e) {
-            // can't get hostname
-            hostname = "unavailable";
+        StackTraceElement[] elements = cause.getStackTrace()
+        if (elements.length > 0) {
+            StackTraceElement trace = elements[0]
+            culprit = trace.getClassName() + "." + trace.getMethodName()
         }
-        return hostname;
+        return culprit
     }
 }
