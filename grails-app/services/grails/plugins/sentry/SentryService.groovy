@@ -7,15 +7,16 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class SentryService {
     static transactional = false
 
-    RavenClient client
+    SentryClient client
 
     void captureMessage(String errorMessage, Throwable throwable = null) {
-        client = new RavenClient(getDSN())
+        client = new SentryClient(getDSN())
         client.captureMessage(errorMessage, RavenUtils.getTimestampLong(), "root", 50, null)
     }
 
     void captureException() {
-        client = new RavenClient(getDSN())
+
+        client = new SentryClient(getDSN())
         client.captureException(new SentryException('Not implemented'))
     }
 
