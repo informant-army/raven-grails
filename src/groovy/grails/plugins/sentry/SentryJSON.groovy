@@ -45,9 +45,7 @@ class SentryJSON {
             logger: loggerClass,
             server_name: RavenUtils.getHostname()
         ])
-        if (exception == null) {
-            obj.put("culprit", culprit)
-        } else {
+        if (exception != null) {
             obj.put("culprit", determineCulprit(exception))
             obj.put("sentry.interfaces.Exception", buildException(exception))
             obj.put("sentry.interfaces.Stacktrace", buildStacktrace(exception))
