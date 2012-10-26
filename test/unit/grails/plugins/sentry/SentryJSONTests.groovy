@@ -70,7 +70,6 @@ class SentryJSONTests extends GroovyTestCase {
 
         JSONObject httpJSON = json.buildHttp(request)
         String result = json.build('message', testException, 'logClass', 'error', request, 'timestamp')
-        println httpJSON.toString()
 
         assertBaseJSONString(result)
         assert result =~ /"sentry.interfaces.Http"/
