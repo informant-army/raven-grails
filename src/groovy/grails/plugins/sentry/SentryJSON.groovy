@@ -1,8 +1,10 @@
 package grails.plugins.sentry
 
 import org.codehaus.groovy.grails.web.json.*
+import javax.servlet.http.HttpServletRequest
 import net.kencochrane.sentry.RavenUtils
 import net.kencochrane.sentry.RavenConfig
+import grails.plugins.sentry.interfaces.SentryHttp
 
 /*
  * http://sentry.readthedocs.org/en/latest/developer/interfaces/index.html
@@ -32,7 +34,7 @@ class SentryJSON {
      *     "module": "__builtins__"
      * }
      */
-    String build(String message, String timestamp, String loggerClass, int logLevel, String culprit, Throwable exception) {
+    String build(String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, String timestamp) {
         JSONObject obj = new JSONObject([
             event_id: RavenUtils.getRandomUUID(), //Hexadecimal string representing a uuid4 value.
             checksum: RavenUtils.calculateChecksum(message),
@@ -49,6 +51,9 @@ class SentryJSON {
             obj.put("culprit", determineCulprit(exception))
             obj.put("sentry.interfaces.Exception", buildException(exception))
             obj.put("sentry.interfaces.Stacktrace", buildStacktrace(exception))
+        }
+        if (request) {
+            obj.put("sentry.interfaces.Http", buildHttp(request))
         }
         return obj.toString()
     }
@@ -118,6 +123,10 @@ class SentryJSON {
             cause = cause.getCause()
         }
         return new JSONObject([frames: array])
+    }
+
+    JSONObject buildHttp(HttpServletRequest request) {
+        return new SentryHttp(request).toJSONObject()
     }
 
     String determineCulprit(Throwable exception) {
