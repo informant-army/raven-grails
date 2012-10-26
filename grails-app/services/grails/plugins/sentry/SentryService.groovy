@@ -1,23 +1,28 @@
 package grails.plugins.sentry
 
-import net.kencochrane.sentry.RavenClient
-import net.kencochrane.sentry.RavenUtils
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class SentryService {
     static transactional = false
 
-    SentryClient client
-
-    void captureMessage(String errorMessage, Throwable throwable = null) {
-        client = new SentryClient(getDSN())
-        client.captureMessage(errorMessage, RavenUtils.getTimestampLong(), "root", 50, null)
+    def logInfo(String message) {
+        sentryClient().logInfo(message)
     }
 
-    void captureException() {
+    def logMessage(String message, String loggerClass, String logLevel) {
+        sentryClient().logInfo(message, loggerClass, logLevel)
+    }
 
-        client = new SentryClient(getDSN())
-        client.captureException(new SentryException('Not implemented'))
+    def logException(Throwable exception) {
+        sentryClient().logException(exception, "root", "error")
+    }
+
+    def logException(Throwable exception, String loggerClass, String logLevel) {
+        sentryClient().logException(exception, loggerClass, logLevel)
+    }
+
+    private SentryClient sentryClient() {
+        new SentryClient(getDSN())
     }
 
     private String getDSN() {
