@@ -1,6 +1,8 @@
 import org.apache.log4j.Logger
 import grails.util.Environment
 
+import grails.plugins.sentry.exception.handler.SentryExceptionResolver
+
 class SentryGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -33,7 +35,14 @@ class SentryGrailsPlugin {
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+        def config = application.config.grails.plugins.sentry
+        def active = config.exception.handler.active
+
+        if (active) {
+            exceptionHandler(SentryExceptionResolver) {
+                exceptionMappings = ['java.lang.Exception': '/error']
+            }
+        }
     }
 
     def doWithDynamicMethods = { ctx ->

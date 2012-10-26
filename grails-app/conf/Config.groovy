@@ -1,5 +1,6 @@
 // configuration for plugin testing - will not be included in the plugin zip
-grails.plugins.sentry.dsn = "TEST_DSN"
+grails.plugins.sentry.dsn = "TEST"
+grails.plugins.sentry.exception.handler.active = true
  
 log4j = {
     appenders {
