@@ -6,21 +6,21 @@ raven-grails is a Grails client for Sentry.
 Installation
 ------------
 
-Clone the repository and build the plugin::
+Clone the repository and build the plugin:
 
     $ git@github.com:informant-army/raven-grails.git
     $ cd raven-grails
     $ grails package-plugin
 
-Copy the generated .zip to your applications /lib directory and add the plugin to applications BuildConfig.groovy::
+Copy the generated .zip to your applications /lib directory and add the plugin to applications BuildConfig.groovy:
 
     compile ":sentry:0.1"
 
-Add your Sentry DSN to Config.groovy::
+Add your Sentry DSN to Config.groovy:
 
     grails.plugins.sentry.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
 
-And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy::
+And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy:
 
     import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
@@ -30,7 +30,7 @@ And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy::
         }
     }
 
-You can also use the SentryService::
+You can also use the SentryService:
 
     import grails.plugins.sentry.SentryService
 
