@@ -44,9 +44,9 @@ You can also use the SentryService:
 TODO
 ----
 
-* Log4j Appender
-* Implement sentry.interfaces.User
-* Update to Grails 2.x
-* Remove raven-java dependency
-* sentry.interfaces.Template
-* sentry.interfaces.Query
+* Log4j Appender (0.2)
+* Implement sentry.interfaces.User (0.2)
+* Update to Grails 2.x (0.3)
+* Remove raven-java dependency (0.4)
+* sentry.interfaces.Template (0.5)
+* sentry.interfaces.Query (0.6)
