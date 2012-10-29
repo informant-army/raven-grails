@@ -4,13 +4,9 @@ import grails.util.Environment
 import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
 class SentryGrailsPlugin {
-    // the plugin version
     def version = "0.1"
-    // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.9 > *"
-    // the other plugins this plugin depends on
     def dependsOn = [:]
-    // resources that are excluded from plugin packaging
     def pluginExcludes = [
             "grails-app/views/**",
             "grails-app/controllers/**",
@@ -19,30 +15,22 @@ class SentryGrailsPlugin {
             "web-app/**"
     ]
 
-    def title = "Sentry Plugin"
+    def title = "Sentry Client Plugin"
     def author = "Alan Fachini"
     def authorEmail = "alfakini@gmail.com"
     def description = "Sentry Client for Grails"
     def documentation = "http://grails.org/plugin/sentry"
 
-    //def license = "APACHE"
-    //def developers = [ [ name: "Name", email: "email@to.com" ] ]
-    //def issueManagement = [ system: "GitHub", url: "https://github.com/alfakini/sentry-grails/issues" ]
-    //def scm = [ url: "https://github.com/alfakini/sentry-grails" ]
+    def license = "APACHE"
+    def developers = [ [ name: "Alan Fachini", email: "alfakini@gmail.com" ] ]
+    def issueManagement = [ system: "GitHub", url: "https://github.com/informant-army/raven-grails/issues" ]
+    def scm = [ url: "https://github.com/informant-army/raven-grails" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
     }
 
     def doWithSpring = {
-        def config = application.config.grails.plugins.sentry
-        def active = config.exception.handler.active
-
-        if (active) {
-            exceptionHandler(SentryExceptionResolver) {
-                exceptionMappings = ['java.lang.Exception': '/error']
-            }
-        }
     }
 
     def doWithDynamicMethods = { ctx ->
