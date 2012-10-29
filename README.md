@@ -47,5 +47,6 @@ TODO
 * Log4j Appender
 * Implement sentry.interfaces.User
 * Update to Grails 2.x
+* Remove raven-java dependency
 * sentry.interfaces.Template
 * sentry.interfaces.Query
