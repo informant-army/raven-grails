@@ -22,7 +22,7 @@ Add your Sentry DSN to Config.groovy:
 
 And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy:
 
-    '''java
+    ```java
     import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
     beans = {
@@ -30,7 +30,7 @@ And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy:
             exceptionMappings = ['java.lang.Exception': '/error']
         }
     }
-    '''
+    ```
 
 You can also use the SentryService:
 
