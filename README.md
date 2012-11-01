@@ -14,34 +14,40 @@ Clone the repository and build the plugin:
 
 Copy the generated .zip to your applications /lib directory and add the plugin to applications BuildConfig.groovy:
 
-    compile ":sentry:0.1"
+```groovy
+compile ":sentry:0.1"
+```
 
 Add your Sentry DSN to Config.groovy:
 
-    grails.plugins.sentry.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
+```groovy
+grails.plugins.sentry.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
+```
 
 And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy:
 
-    ```java
-    import grails.plugins.sentry.exception.handler.SentryExceptionResolver
+```groovy
+import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
-    beans = {
-        exceptionHandler(SentryExceptionResolver) {
-            exceptionMappings = ['java.lang.Exception': '/error']
-        }
+beans = {
+    exceptionHandler(SentryExceptionResolver) {
+        exceptionMappings = ['java.lang.Exception': '/error']
     }
-    ```
+}
+```
 
 You can also use the SentryService:
 
-    import grails.plugins.sentry.SentryService
+```groovy
+import grails.plugins.sentry.SentryService
 
-    SentryService sentryService
+SentryService sentryService
 
-    sentryService.logInfo(String message)
-    sentryService.logMessage(String message, String loggerClass, String logLevel)
-    sentryService.logException(Throwable exception)
-    sentryService.logException(Throwable exception, String loggerClass, String logLevel)
+sentryService.logInfo(String message)
+sentryService.logMessage(String message, String loggerClass, String logLevel)
+sentryService.logException(Throwable exception)
+sentryService.logException(Throwable exception, String loggerClass, String logLevel)
+```
 
 TODO
 ----
