@@ -2,12 +2,13 @@ package grails.plugins.sentry.exception.handler
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import org.springframework.web.servlet.ModelAndView;
-import org.codehaus.groovy.runtime.InvokerInvocationException;
+import org.springframework.web.servlet.ModelAndView
+import org.codehaus.groovy.runtime.InvokerInvocationException
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.codehaus.groovy.grails.web.servlet.mvc.exceptions.GrailsMVCException;
+import org.codehaus.groovy.grails.web.servlet.mvc.exceptions.GrailsMVCException
 import org.codehaus.groovy.grails.web.errors.GrailsExceptionResolver
 
+import grails.util.Environment
 import grails.plugins.sentry.SentryClient
 import grails.plugins.sentry.exception.filter.SentryStackTraceFilterer
 
@@ -23,12 +24,14 @@ class SentryExceptionResolver extends GrailsExceptionResolver {
     ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, java.lang.Object handler, java.lang.Exception exception) {
         ModelAndView mv = super.resolveException(request, response, handler, exception)
 
-        exception = findWrappedException(exception)
-        stackFilterer = new SentryStackTraceFilterer(true)
-        exception = stackFilterer.filter(exception, true)
+        if (activeEnvironments().contains(Environment.current.getName())) {
+            exception = findWrappedException(exception)
+            stackFilterer = new SentryStackTraceFilterer(true)
+            exception = stackFilterer.filter(exception, true)
 
-        SentryClient client = new SentryClient(getDSN())
-        client.logException(exception, "root", "error", request)
+            SentryClient client = new SentryClient(getDSN())
+            client.logException(exception, "root", "error", request)
+        }
 
         return mv
     }
@@ -38,12 +41,12 @@ class SentryExceptionResolver extends GrailsExceptionResolver {
      */
     private Exception findWrappedException(Exception e) {
         if ((e instanceof InvokerInvocationException) || (e instanceof GrailsMVCException)) {
-            Throwable t = getRootCause(e);
+            Throwable t = getRootCause(e)
             if (t instanceof Exception) {
-                e = (Exception) t;
+                e = (Exception) t
             }
         }
-        return e;
+        return e
     }
 
     /*
@@ -51,12 +54,16 @@ class SentryExceptionResolver extends GrailsExceptionResolver {
      */
     public static Throwable getRootCause(Throwable ex) {
         while (ex.getCause() != null && !ex.equals(ex.getCause())) {
-            ex = ex.getCause();
+            ex = ex.getCause()
         }
-        return ex;
+        return ex
     }
 
     private String getDSN() {
         return ConfigurationHolder.config.grails.plugins.sentry.dsn
+    }
+
+    private List<String> activeEnvironments() {
+        return ConfigurationHolder.config.grails.plugins.sentry.environments
     }
 }

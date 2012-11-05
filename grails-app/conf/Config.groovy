@@ -1,7 +1,7 @@
 // configuration for plugin testing - will not be included in the plugin zip
 grails.plugins.sentry.dsn = "TEST"
-grails.plugins.sentry.exception.handler.active = true
- 
+grails.plugins.sentry.environments = ["production"]
+
 log4j = {
     appenders {
         console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')

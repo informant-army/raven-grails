@@ -4,7 +4,7 @@ import grails.util.Environment
 import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
 class SentryGrailsPlugin {
-    def version = "0.1"
+    def version = "0.2"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
     def pluginExcludes = [
