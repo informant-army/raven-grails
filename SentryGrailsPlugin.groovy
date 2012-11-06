@@ -1,6 +1,7 @@
 import org.apache.log4j.Logger
 import grails.util.Environment
 
+import grails.plugins.sentry.SentryAppender
 import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
 class SentryGrailsPlugin {
@@ -27,10 +28,11 @@ class SentryGrailsPlugin {
     def scm = [ url: "https://github.com/informant-army/raven-grails" ]
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before 
+        // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
+        sentryAppender(SentryAppender)
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -38,7 +40,9 @@ class SentryGrailsPlugin {
     }
 
     def doWithApplicationContext = { applicationContext ->
-        // TODO Implement post initialization spring config (optional)
+        def appender = applicationContext.sentryAppender
+        appender.activateOptions()
+        Logger.rootLogger.addAppender(appender)
     }
 
     def onChange = { event ->

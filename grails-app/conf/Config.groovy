@@ -8,7 +8,6 @@ grails.exceptionresolver.logRequestParameters = true
 
 log4j = {
     appenders {
-        appender name:'sentry', new SentryAppender()
         console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     }
 
@@ -29,6 +28,5 @@ log4j = {
 
     root {
         warn 'stdout'
-        error 'sentry'
     }
 }

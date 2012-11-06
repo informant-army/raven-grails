@@ -53,23 +53,19 @@ sentryService.logException(Throwable exception, String loggerClass, String logLe
 Log4j Appender
 --------------
 
-To use the Log4j Appender, configure the appenter on log4j.appenders in the Config.groovy:
+The Log4j Appender is automatically configured by plugin, you have just to set the enabled environments on Config.groovy:
 
 ```groovy
-appender name:'sentry', new grails.plugins.sentry.SentryAppender()
-```
-
-And set the log level on log4j.root, e.g. error:
-
-```groovy
-error 'sentry'
+grails.plugins.sentry.environments = ["production"]
 ```
 
 TODO
 ----
 
-* Implement sentry.interfaces.User (0.2)
-* Update to Grails 2.x (0.3)
-* Remove raven-java dependency (0.4)
-* sentry.interfaces.Template (0.5)
+* Create Configuration class (0.2)
+* Add grails.plugins.sentry.logger.levels (0.2)
+* Remove raven-java dependency (0.2)
+* Implement sentry.interfaces.User (0.3)
+* Update to Grails 2.x (0.5)
+* sentry.interfaces.Template (0.6)
 * sentry.interfaces.Query (0.6)
