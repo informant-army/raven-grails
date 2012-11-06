@@ -5,6 +5,8 @@ import java.util.Date
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
 import org.apache.commons.lang.time.DateFormatUtils
+import org.apache.log4j.Level
+import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
 
 class SentryClient {
@@ -41,6 +43,15 @@ class SentryClient {
     def logException(Throwable exception, String loggerName, String logLevel, HttpServletRequest request) {
         long timestamp = timestampLong()
         String body = buildMessage(exception.getMessage(), exception, loggerName, logLevel, request, timestampString(timestamp))
+        send(body, timestamp)
+    }
+
+    def logEvent(LoggingEvent event) {
+        long timestamp = timestampLong()
+        Level level = event.getLevel()
+        String logLevel = (level ? level.toString().toLowerCase() : "root")
+
+        String body = buildMessage(event.getRenderedMessage(), event.getLoggerName(), logLevel, timestampString(timestamp))
         send(body, timestamp)
     }
 

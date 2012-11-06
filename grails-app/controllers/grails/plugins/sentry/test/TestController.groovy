@@ -27,6 +27,11 @@ class TestController {
         render(view:'/index')
     }
 
+    def testLog = {
+        log.error("Test Sentry Appender.")
+        render(view:'/index')
+    }
+
     private String getDSN() {
         return ConfigurationHolder.config.grails.plugins.sentry.dsn
     }

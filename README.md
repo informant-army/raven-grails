@@ -1,7 +1,7 @@
 raven-grails
 ============
 
-raven-grails is a Grails client for Sentry. 
+raven-grails is a Grails client for Sentry.
 
 Installation
 ------------
@@ -49,10 +49,24 @@ sentryService.logException(Throwable exception)
 sentryService.logException(Throwable exception, String loggerClass, String logLevel)
 ```
 
+Log4j Appender
+--------------
+
+To use the Log4j Appender, configure the appenter on log4j.appenders in the Config.groovy:
+
+```groovy
+appender name:'sentry', new grails.plugins.sentry.SentryAppender()
+```
+
+And set the log level on log4j.root, e.g. error:
+
+```groovy
+error 'sentry'
+```
+
 TODO
 ----
 
-* Log4j Appender (0.2)
 * Implement sentry.interfaces.User (0.2)
 * Update to Grails 2.x (0.3)
 * Remove raven-java dependency (0.4)
