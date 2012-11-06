@@ -22,6 +22,7 @@ Add your Sentry DSN to Config.groovy:
 
 ```groovy
 grails.plugins.sentry.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
+grails.plugins.sentry.environments = ["production"]
 ```
 
 And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy:
