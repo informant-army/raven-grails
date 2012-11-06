@@ -58,14 +58,3 @@ The Log4j Appender is automatically configured by plugin, you have just to set t
 ```groovy
 grails.plugins.sentry.environments = ["production"]
 ```
-
-TODO
-----
-
-* Create Configuration class (0.2)
-* Add grails.plugins.sentry.logger.levels (0.2)
-* Remove raven-java dependency (0.2)
-* Implement sentry.interfaces.User (0.3)
-* Update to Grails 2.x (0.5)
-* sentry.interfaces.Template (0.6)
-* sentry.interfaces.Query (0.6)
