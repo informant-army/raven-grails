@@ -24,7 +24,7 @@ class SentryExceptionResolver extends GrailsExceptionResolver {
     ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, java.lang.Object handler, java.lang.Exception exception) {
         ModelAndView mv = super.resolveException(request, response, handler, exception)
 
-        if (activeEnvironments().contains(Environment.current.getName())) {
+        if (ConfigurationHolder.config.grails.plugins.sentry.active) {
             exception = findWrappedException(exception)
             stackFilterer = new SentryStackTraceFilterer(true)
             exception = stackFilterer.filter(exception, true)
@@ -61,9 +61,5 @@ class SentryExceptionResolver extends GrailsExceptionResolver {
 
     private String getDSN() {
         return ConfigurationHolder.config.grails.plugins.sentry.dsn
-    }
-
-    private List<String> activeEnvironments() {
-        return ConfigurationHolder.config.grails.plugins.sentry.environments
     }
 }

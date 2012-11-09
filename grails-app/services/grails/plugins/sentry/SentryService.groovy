@@ -7,25 +7,25 @@ class SentryService {
     static transactional = false
 
     def logInfo(String message) {
-        if (activeEnvironments().contains(Environment.current.getName())) {
+        if (isActive()) {
             sentryClient().logInfo(message)
         }
     }
 
     def logMessage(String message, String loggerClass, String logLevel) {
-        if (activeEnvironments().contains(Environment.current.getName())) {
+        if (isActive()) {
             sentryClient().logInfo(message, loggerClass, logLevel)
         }
     }
 
     def logException(Throwable exception) {
-        if (activeEnvironments().contains(Environment.current.getName())) {
+        if (isActive()) {
             sentryClient().logException(exception, "root", "error")
         }
     }
 
     def logException(Throwable exception, String loggerClass, String logLevel) {
-        if (activeEnvironments().contains(Environment.current.getName())) {
+        if (isActive()) {
             sentryClient().logException(exception, loggerClass, logLevel)
         }
     }
@@ -38,7 +38,7 @@ class SentryService {
         return ConfigurationHolder.config.grails.plugins.sentry.dsn
     }
 
-    private List<String> activeEnvironments() {
-        return ConfigurationHolder.config.grails.plugins.sentry.environments
+    private boolean isActive() {
+        return ConfigurationHolder.config.grails.plugins.sentry.active
     }
 }

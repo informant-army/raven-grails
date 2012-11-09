@@ -2,9 +2,17 @@ import grails.plugins.sentry.SentryAppender
 
 // configuration for plugin testing - will not be included in the plugin zip
 grails.plugins.sentry.dsn = "TEST"
-grails.plugins.sentry.environments = ["production"]
 grails.exceptionresolver.params.exclude = ['password', 'creditCard']
 grails.exceptionresolver.logRequestParameters = true
+
+environments {
+    development {
+        grails.plugins.sentry.active = false
+    }
+    production {
+        grails.plugins.sentry.active = false
+    }
+}
 
 log4j = {
     appenders {

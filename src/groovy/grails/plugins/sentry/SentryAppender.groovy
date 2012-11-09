@@ -14,7 +14,9 @@ class SentryAppender extends AppenderSkeleton {
     }
 
     void append(LoggingEvent event) {
-        sentryClient.logEvent(event)
+        if (ConfigurationHolder.config.grails.plugins.sentry.active) {
+            sentryClient.logEvent(event)
+        }
     }
 
     void close() { }

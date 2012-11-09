@@ -16,7 +16,9 @@ class SentryServiceTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    public void testActiveEnvironments() {
+    public void testNotActiveEnvironments() {
+        assert 'test', Environment.getCurrent().getName()
+
         def sentryClient = mockFor(SentryClient)
         sentryClient.metaClass.logInfo = {
             return true
@@ -25,22 +27,32 @@ class SentryServiceTests extends GrailsUnitTestCase {
         sentryService.metaClass.sentryClient = {
             return sentryClient
         }
-        sentryService.metaClass.activeEnvironments = {
-            return ['production']
+
+        mockConfig('''
+            grails.plugins.sentry.active = false
+        ''')
+
+        def result = sentryService.logInfo("Test Active Environments.")
+        assertNull result
+    }
+
+    public void testActiveEnvironment() {
+        assert 'test', Environment.getCurrent().getName()
+
+        def sentryClient = mockFor(SentryClient)
+        sentryClient.metaClass.logInfo = {
+            return true
         }
 
-        Environment.metaClass.static.getName = {
-            return 'production'
+        sentryService.metaClass.sentryClient = {
+            return sentryClient
         }
+
+        mockConfig('''
+            grails.plugins.sentry.active = true
+        ''')
 
         def result = sentryService.logInfo("Test Active Environments.")
         assertTrue result
-
-        Environment.metaClass.static.getName = {
-            return 'test'
-        }
-
-        result = sentryService.logInfo("Test Active Environments.")
-        assertNull result
     }
 }

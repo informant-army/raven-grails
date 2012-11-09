@@ -1,10 +1,8 @@
-raven-grails
-============
+# raven-grails
 
-raven-grails is a Grails client for Sentry.
+raven-grails is a Grails client for integration apps with [Sentry](http://www.getsentry.com).
 
-Installation
-------------
+## Installation
 
 Clone the repository and build the plugin:
 
@@ -12,20 +10,33 @@ Clone the repository and build the plugin:
     $ cd raven-grails
     $ grails package-plugin
 
-Copy the generated .zip to your applications /lib directory and add the plugin to applications BuildConfig.groovy:
+Copy the generated .zip to your applications /lib directory add the following to your `BuildConfig.groovy`:
 
 ```groovy
 compile ":sentry:0.1"
 ```
 
-Add your Sentry DSN to Config.groovy:
+## Configuration
+
+You need to provide your Sentry DSN and activate notifications for environments in `Config.groovy` file:
 
 ```groovy
 grails.plugins.sentry.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
-grails.plugins.sentry.environments = ["production"]
+
+environments {
+    test {
+        grails.plugins.sentry.active = false
+    }
+    development {
+        grails.plugins.sentry.active = false
+    }
+    production {
+        grails.plugins.sentry.active = true
+    }
+}
 ```
 
-And configure the ExceptionHandler on grails-app/conf/spring/resources.groovy:
+To let raven-grails catch all the exceptions in your applicaiton, configure the `ExceptionHandler` in `grails-app/conf/spring/resources.groovy` file:
 
 ```groovy
 import grails.plugins.sentry.exception.handler.SentryExceptionResolver
@@ -37,35 +48,23 @@ beans = {
 }
 ```
 
-You can also use the SentryService:
+## Usage
+
+If you configured the exception handler, all the Exceptions will be send to Sentry. You can also use the plugin as follows:
+
+### Log4j Appender
+
+The Log4j Appender is automatically configured by plugin, you have just to set the enabled environments in `Config.groovy` file as shown in Configuration section.
+
+### SentryService
 
 ```groovy
 import grails.plugins.sentry.SentryService
 
-SentryService sentryService
+def sentryService
 
 sentryService.logInfo(String message)
 sentryService.logMessage(String message, String loggerClass, String logLevel)
 sentryService.logException(Throwable exception)
 sentryService.logException(Throwable exception, String loggerClass, String logLevel)
 ```
-
-Log4j Appender
---------------
-
-The Log4j Appender is automatically configured by plugin, you have just to set the enabled environments on Config.groovy:
-
-```groovy
-grails.plugins.sentry.environments = ["production"]
-```
-
-TODO
-----
-
-* Create Configuration class (0.2)
-* Add grails.plugins.sentry.logger.levels (0.2)
-* Remove raven-java dependency (0.2)
-* Implement sentry.interfaces.User (0.3)
-* Update to Grails 2.x (0.5)
-* sentry.interfaces.Template (0.6)
-* sentry.interfaces.Query (0.6)
