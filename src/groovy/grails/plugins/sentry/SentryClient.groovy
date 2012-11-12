@@ -52,7 +52,9 @@ class SentryClient {
         Level level = event.getLevel()
         String logLevel = (level ? level.toString().toLowerCase() : "root")
 
-        String body = buildMessage(event.message.toString(), event.throwableInformation?.throwable, event.getLoggerName(), logLevel, request.getCurrentRequest(), timestampString(timestamp))
+        def currentRequest = request?.getCurrentRequest()
+
+        String body = buildMessage(event.message.toString(), event.throwableInformation?.throwable, event.getLoggerName(), logLevel, currentRequest, timestampString(timestamp))
         send(body, timestamp)
     }
 

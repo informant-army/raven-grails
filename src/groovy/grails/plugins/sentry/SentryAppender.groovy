@@ -21,9 +21,9 @@ class SentryAppender extends AppenderSkeleton {
         if (ConfigurationHolder.config.grails.plugins.sentry.active == false) { return }
 
         def level = event.getLevel()
-        def request = (GrailsWebRequest) RequestContextHolder.requestAttributes
 
         if (level.equals(Level.ERROR) || level.equals(Level.FATAL) || level.equals(Level.WARN)) {
+            def request = (GrailsWebRequest) RequestContextHolder.requestAttributes
             sentryClient.logEvent(event, request)
         }
     }
