@@ -2,7 +2,6 @@ import org.apache.log4j.Logger
 import grails.util.Environment
 
 import grails.plugins.sentry.SentryAppender
-import grails.plugins.sentry.exception.handler.SentryExceptionResolver
 
 class SentryGrailsPlugin {
     def version = "0.2"
