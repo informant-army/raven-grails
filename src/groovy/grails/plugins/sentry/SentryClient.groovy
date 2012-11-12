@@ -5,6 +5,7 @@ import java.util.Date
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
 import org.apache.commons.lang.time.DateFormatUtils
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
@@ -46,12 +47,12 @@ class SentryClient {
         send(body, timestamp)
     }
 
-    def logEvent(LoggingEvent event) {
+    def logEvent(LoggingEvent event, GrailsWebRequest request) {
         long timestamp = timestampLong()
         Level level = event.getLevel()
         String logLevel = (level ? level.toString().toLowerCase() : "root")
 
-        String body = buildMessage(event.getRenderedMessage(), event.getLoggerName(), logLevel, timestampString(timestamp))
+        String body = buildMessage(event.message.toString(), event.throwableInformation?.throwable, event.getLoggerName(), logLevel, request.getCurrentRequest(), timestampString(timestamp))
         send(body, timestamp)
     }
 

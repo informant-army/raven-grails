@@ -7,7 +7,7 @@ grails.exceptionresolver.logRequestParameters = true
 
 environments {
     development {
-        grails.plugins.sentry.active = false
+        grails.plugins.sentry.active = true
     }
     production {
         grails.plugins.sentry.active = false

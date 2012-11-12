@@ -4,6 +4,8 @@ import org.apache.log4j.AppenderSkeleton
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.web.context.request.RequestContextHolder
 
 class SentryAppender extends AppenderSkeleton {
 
@@ -16,8 +18,13 @@ class SentryAppender extends AppenderSkeleton {
     }
 
     void append(LoggingEvent event) {
-        if (ConfigurationHolder.config.grails.plugins.sentry.active) {
-            sentryClient.logEvent(event)
+        if (ConfigurationHolder.config.grails.plugins.sentry.active == false) { return }
+
+        def level = event.getLevel()
+        def request = (GrailsWebRequest) RequestContextHolder.requestAttributes
+
+        if (level.equals(Level.ERROR) || level.equals(Level.FATAL) || level.equals(Level.WARN)) {
+            sentryClient.logEvent(event, request)
         }
     }
 
