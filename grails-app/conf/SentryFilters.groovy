@@ -1,3 +1,5 @@
+package grails.plugins.sentry.test
+
 import grails.plugins.sentry.SentryService
 
 class SentryFilters {
