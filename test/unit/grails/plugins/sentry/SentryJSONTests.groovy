@@ -60,7 +60,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildJSON() {
-        String result = json.build('message', testException, 'logClass', 'error', null, 'timestamp')
+        String result = json.build('message', testException, 'logClass', 'error', null, null, 'timestamp')
         assertBaseJSONString(result)
     }
 
@@ -69,7 +69,7 @@ class SentryJSONTests extends GroovyTestCase {
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
         JSONObject httpJSON = json.buildHttp(request)
-        String result = json.build('message', testException, 'logClass', 'error', request, 'timestamp')
+        String result = json.build('message', testException, 'logClass', 'error', request, null, 'timestamp')
 
         assertBaseJSONString(result)
         assert result =~ /"sentry.interfaces.Http"/
@@ -79,6 +79,15 @@ class SentryJSONTests extends GroovyTestCase {
         assert result =~ /"env":\{"SERVER_PORT":8080,"REMOTE_ADDR":"10\.10\.10\.10","SERVER_NAME":"localhost"\}/
         assert result =~ /"data":\{"test":"lala","test2":"lolo"\}/
         assert result =~ /"method":"GET"/
+    }
+
+    def void testBuildJSONWithUserData() {
+        Map user = [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com']
+
+        String result = json.build('message', testException, 'logClass', 'error', null, user, 'timestamp')
+
+        assertBaseJSONString(result)
+        assert result =~ /\"sentry\.interfaces\.User\":\{\"id\":\"123\",\"username\":\"username\",\"email\":\"user@email.com\",\"is_authenticated\":true\}/
     }
 
 // LOCAL ASSERTION

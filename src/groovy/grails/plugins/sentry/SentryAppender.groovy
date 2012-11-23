@@ -23,8 +23,10 @@ class SentryAppender extends AppenderSkeleton {
         def level = event.getLevel()
 
         if (level.equals(Level.ERROR) || level.equals(Level.FATAL) || level.equals(Level.WARN)) {
-            def request = (GrailsWebRequest) RequestContextHolder.requestAttributes
-            sentryClient.logEvent(event, request)
+            def grailsRequest = (GrailsWebRequest) RequestContextHolder.requestAttributes
+            def request = grailsRequest?.getRequest()
+            def currentUser = request ? request['sentryUserData'] : null
+            sentryClient.logEvent(event, request, currentUser)
         }
     }
 

@@ -9,6 +9,7 @@ import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
+import grails.plugins.sentry.interfaces.User
 
 class SentryClient {
 
@@ -47,14 +48,12 @@ class SentryClient {
         send(body, timestamp)
     }
 
-    def logEvent(LoggingEvent event, GrailsWebRequest request) {
+    def logEvent(LoggingEvent event, HttpServletRequest request, Map currentUser) {
         long timestamp = timestampLong()
         Level level = event.getLevel()
         String logLevel = (level ? level.toString().toLowerCase() : "root")
 
-        def currentRequest = request?.getCurrentRequest()
-
-        String body = buildMessage(event.message.toString(), event.throwableInformation?.throwable, event.getLoggerName(), logLevel, currentRequest, timestampString(timestamp))
+        String body = buildMessage(event.message.toString(), event.throwableInformation?.throwable, event.getLoggerName(), logLevel, request, currentUser, timestampString(timestamp))
         send(body, timestamp)
     }
 
@@ -67,12 +66,13 @@ class SentryClient {
     }
 
     private String buildMessage(String message, String loggerName, String logLevel, String timestamp) {
-        return buildMessage(message, null, loggerName, logLevel, null, timestamp)
+        return buildMessage(message, null, loggerName, logLevel, null, null, timestamp)
     }
 
-    private String buildMessage(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, String timestamp) {
+    private String buildMessage(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, String timestamp) {
+        User user = (userData ? new User(userData.is_authenticated, userData) : null)
         SentryJSON json = new SentryJSON(this.config)
-        String jsonMessage = json.build(message, exception, loggerName, logLevel, request, timestamp)
+        String jsonMessage = json.build(message, exception, loggerName, logLevel, request, user, timestamp)
 
         return buildMessageBody(jsonMessage)
     }

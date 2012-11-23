@@ -2,6 +2,7 @@ package grails.plugins.sentry
 
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.springframework.web.context.request.RequestContextHolder
 
 class SentryService {
     static transactional = false
@@ -28,6 +29,11 @@ class SentryService {
         if (isActive()) {
             sentryClient().logException(exception, loggerClass, logLevel)
         }
+    }
+
+    def setUserData(Map user) {
+        def request = RequestContextHolder.currentRequestAttributes().getRequest()
+        request['sentryUserData'] = user
     }
 
     private SentryClient sentryClient() {

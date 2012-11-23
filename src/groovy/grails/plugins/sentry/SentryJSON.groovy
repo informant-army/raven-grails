@@ -4,7 +4,7 @@ import org.codehaus.groovy.grails.web.json.*
 import javax.servlet.http.HttpServletRequest
 import net.kencochrane.sentry.RavenUtils
 import net.kencochrane.sentry.RavenConfig
-import grails.plugins.sentry.interfaces.SentryHttp
+import grails.plugins.sentry.interfaces.*
 
 /*
  * http://sentry.readthedocs.org/en/latest/developer/interfaces/index.html
@@ -34,7 +34,8 @@ class SentryJSON {
      *     "module": "__builtins__"
      * }
      */
-    String build(String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, String timestamp) {
+    String build(String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp) {
+
         JSONObject obj = new JSONObject([
             event_id: RavenUtils.getRandomUUID(), //Hexadecimal string representing a uuid4 value.
             checksum: RavenUtils.calculateChecksum(message),
@@ -45,13 +46,16 @@ class SentryJSON {
             logger: loggerClass,
             server_name: RavenUtils.getHostname()
         ])
-        if (exception != null) {
+        if (exception) {
             obj.put("culprit", determineCulprit(exception))
             obj.put("sentry.interfaces.Exception", buildException(exception))
             obj.put("sentry.interfaces.Stacktrace", buildStacktrace(exception))
         }
         if (request) {
             obj.put("sentry.interfaces.Http", buildHttp(request))
+        }
+        if (user) {
+            obj.put("sentry.interfaces.User", user.toJSON())
         }
         return obj.toString()
     }
@@ -99,7 +103,7 @@ class SentryJSON {
         Throwable cause = exception
         while (cause != null) {
             StackTraceElement[] elements = cause.getStackTrace()
-            elements.eachWithIndex { element, index -> 
+            elements.eachWithIndex { element, index ->
                 if (index == 0) {
                     String msg = "Caused by: " + cause.getClass().getName()
                     if (cause.getMessage() != null) {
