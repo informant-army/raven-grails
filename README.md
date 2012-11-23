@@ -47,10 +47,10 @@ class SentryFilters {
     def filters = {
         all(uri: '/**') {
             before = {
-                def user = springSecurityService.currentUser
-                if (user) {
+                if (springSecurityService.isLoggedIn()) {
+                    def user = springSecurityService.currentUser
                     def userData = [id: user.id, is_authenticated: true, email: user.email, username: user.username]
-                    sentryService.setUserData(user)
+                    sentryService.setUserData(userData)
                 } else {
                     sentryService.setUserData([is_authenticated:false])
                 }
