@@ -35,6 +35,30 @@ environments {
     }
 }
 ```
+To set the current user data to be included in the logged messages sent to Sentry use the method `sentryService.setUserData` passing a Map containing the user data. The supported keys are id, username, email and is\_authenticated. The only key that is mandatory is is\_authenticated. If you are using SpringSecurity in your application, you can get the current user using the method `springSecurityService.currentUser`. Above an example of Grails filter to set the user data:
+
+```groovy
+import grails.plugins.sentry.SentryService
+
+class SentryFilters {
+    def sentryService
+    def springSecurityService
+
+    def filters = {
+        all(uri: '/**') {
+            before = {
+                def user = springSecurityService.currentUser
+                if (user) {
+                    def userData = [id: user.id, is_authenticated: true, email: user.email, username: user.username]
+                    sentryService.setUserData(user)
+                } else {
+                    sentryService.setUserData([is_authenticated:false])
+                }
+            }
+        }
+    }
+}
+```
 
 ## Usage
 
