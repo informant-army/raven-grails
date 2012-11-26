@@ -1,7 +1,7 @@
 import grails.plugins.sentry.SentryAppender
 
 // configuration for plugin testing - will not be included in the plugin zip
-grails.plugins.sentry.dsn = "TEST"
+grails.plugins.sentry.dsn = "https://123:123@app.getsentry.com/123"
 grails.exceptionresolver.params.exclude = ['password', 'creditCard']
 grails.exceptionresolver.logRequestParameters = true
 
