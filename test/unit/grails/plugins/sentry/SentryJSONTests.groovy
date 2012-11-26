@@ -6,6 +6,7 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 import net.kencochrane.sentry.RavenConfig
 import net.kencochrane.sentry.RavenUtils
 import javax.servlet.http.HttpServletRequest
+import grails.plugins.sentry.interfaces.User
 
 class SentryJSONTests extends GroovyTestCase {
 
@@ -82,7 +83,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildJSONWithUserData() {
-        Map user = [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com']
+        User user = new User(true, [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com'])
 
         String result = json.build('message', testException, 'logClass', 'error', null, user, 'timestamp')
 
