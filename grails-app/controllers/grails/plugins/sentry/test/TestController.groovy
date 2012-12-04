@@ -11,7 +11,7 @@ class TestController {
         render(view:'/index')
     }
 
-    def serviceMessage = {
+    def serviceInfo = {
         sentryService.logInfo("Service logInfo test")
         render(view:'/index')
     }

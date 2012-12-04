@@ -15,7 +15,7 @@ Clone the repository and build the plugin:
 Copy the generated .zip to your applications /lib directory add the following to your `BuildConfig.groovy`:
 
 ```groovy
-compile ":sentry:0.3"
+compile ":sentry:0.3.1"
 ```
 
 ## Configuration

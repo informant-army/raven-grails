@@ -15,19 +15,18 @@ class SentryService {
 
     def logMessage(String message, String loggerClass, String logLevel) {
         if (isActive()) {
-            sentryClient().logInfo(message, loggerClass, logLevel)
+            sentryClient().logMessage(message, loggerClass, logLevel)
         }
     }
 
     def logException(Throwable exception) {
-        if (isActive()) {
-            sentryClient().logException(exception, "root", "error")
-        }
+        logException(exception, "root", "error")
     }
 
     def logException(Throwable exception, String loggerClass, String logLevel) {
         if (isActive()) {
-            sentryClient().logException(exception, loggerClass, logLevel)
+            def request = RequestContextHolder.currentRequestAttributes().getRequest()
+            sentryClient().logException(exception, loggerClass, logLevel, request)
         }
     }
 

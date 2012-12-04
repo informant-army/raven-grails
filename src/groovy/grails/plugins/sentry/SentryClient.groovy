@@ -25,39 +25,39 @@ class SentryClient {
     }
 
     def logInfo(String message) {
-        logMessage(message, "root", 'info')
+        send(message, null, 'root', 'info', null, null)
     }
 
     def logMessage(String message, String loggerName, String logLevel) {
-        long timestamp = timestampLong()
-        String body = buildMessage(message, loggerName, logLevel, timestampString(timestamp))
-        send(body, timestamp)
+        send(exception.getMessage(), null, loggerName, logLevel, null, null)
     }
 
     def logException(Throwable exception) {
-        logException(exception, "root", "error")
-    }
-
-    def logException(Throwable exception, String loggerName, String logLevel)  {
-        logException(exception, loggerName, logLevel, null)
+        send(exception.getMessage(), null, 'root', 'error', null, null)
     }
 
     def logException(Throwable exception, String loggerName, String logLevel, HttpServletRequest request) {
-        long timestamp = timestampLong()
-        String body = buildMessage(exception.getMessage(), exception, loggerName, logLevel, request, timestampString(timestamp))
-        send(body, timestamp)
+        send(exception.getMessage(), exception, loggerName, logLevel, request, null)
     }
 
     def logEvent(LoggingEvent event, HttpServletRequest request, Map currentUser) {
         long timestamp = timestampLong()
         Level level = event.getLevel()
         String logLevel = (level ? level.toString().toLowerCase() : "root")
+        String message = event.message.toString()
+        String loggerName = event.getLoggerName()
+        def exception = event.throwableInformation?.throwable
 
-        String body = buildMessage(event.message.toString(), event.throwableInformation?.throwable, event.getLoggerName(), logLevel, request, currentUser, timestampString(timestamp))
-        send(body, timestamp)
+        send(message, exception, loggerName, logLevel, request, currentUser)
     }
 
-    private void send(String message, long timestamp) {
+    private void send(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData) {
+        long timestamp = timestampLong()
+        String body = buildMessage(message, exception, loggerName, logLevel, request, userData, timestamp)
+        doSend(body, timestamp)
+    }
+
+    private void doSend(String message, long timestamp) {
         try {
             connection.send(message, timestamp)
         } catch (IOException e) {
@@ -65,14 +65,10 @@ class SentryClient {
         }
     }
 
-    private String buildMessage(String message, String loggerName, String logLevel, String timestamp) {
-        return buildMessage(message, null, loggerName, logLevel, null, null, timestamp)
-    }
-
-    private String buildMessage(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, String timestamp) {
+    private String buildMessage(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, Long timestamp) {
         User user = (userData ? new User(userData.is_authenticated, userData) : null)
         SentryJSON json = new SentryJSON(this.config)
-        String jsonMessage = json.build(message, exception, loggerName, logLevel, request, user, timestamp)
+        String jsonMessage = json.build(message, exception, loggerName, logLevel, request, user, timestampString(timestamp))
 
         return buildMessageBody(jsonMessage)
     }
