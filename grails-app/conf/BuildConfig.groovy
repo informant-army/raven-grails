@@ -1,7 +1,7 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -24,7 +24,11 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+        build("org.grails.plugins:tomcat:$grailsVersion",
+              "org.grails.plugins:release:2.2.0",
+              "org.grails.plugins:rest-client-builder:1.0.3") {
+            export = false
+        }
         compile 'net.kencochrane:raven-java:0.6-SNAPSHOT'
     }
 }

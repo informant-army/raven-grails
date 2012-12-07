@@ -4,7 +4,7 @@ import grails.util.Environment
 import grails.plugins.sentry.SentryAppender
 
 class SentryGrailsPlugin {
-    def version = "0.3.1"
+    def version = "0.4"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
     def pluginExcludes = [
