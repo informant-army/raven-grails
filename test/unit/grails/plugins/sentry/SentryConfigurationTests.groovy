@@ -88,4 +88,23 @@ class SentryConfigurationTests extends GrailsUnitTestCase {
 
         assertEquals "testServerName", config.serverName
     }
+
+    public void testActiveProperty() {
+        // Default true
+        mockConfig('''
+            grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/path/to/api/123"
+        ''')
+        SentryConfiguration config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
+
+        assertTrue config.active
+
+        // grails.plugins.sentry.active = false
+        mockConfig('''
+            grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/path/to/api/123"
+            grails.plugins.sentry.active = false
+        ''')
+        config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
+
+        assertFalse config.active
+    }
 }

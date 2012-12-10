@@ -20,7 +20,7 @@ compile ":sentry:0.4"
 
 ## Configuration
 
-You need to provide your Sentry DSN and activate notifications for environments in `Config.groovy` file:
+You need to provide your Sentry DSN in `Config.groovy` file. The plugin will sent notifications to Sentry by default, if you want to disable notifications for an specific environment set the active option as false.
 
 ```groovy
 grails.plugins.sentry.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
@@ -33,7 +33,6 @@ environments {
         grails.plugins.sentry.active = false
     }
     production {
-        grails.plugins.sentry.active = true
     }
 }
 ```

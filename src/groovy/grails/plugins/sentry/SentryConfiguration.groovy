@@ -12,10 +12,10 @@ class SentryConfiguration {
     String path
     String projectId
     String clientVersion
-    Integer port
-    boolean active
     String serverName
     String platform = 'groovy'
+    Integer port
+    boolean active = true
 
     SentryConfiguration(Map options = [:]) throws SentryException {
         options.each { k,v -> if (this.hasProperty(k)) { this."$k" = v} }

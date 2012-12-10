@@ -54,13 +54,15 @@ class SentryClient {
     }
 
     private void send(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData) {
-        String eventId = generateEventId()
-        String checksum = generateChecksum(message)
-        long timestamp = timestampLong()
-        User user = (userData ? new User(userData.is_authenticated, userData) : null)
+        if (config.active) {
+            String eventId = generateEventId()
+            String checksum = generateChecksum(message)
+            long timestamp = timestampLong()
+            User user = (userData ? new User(userData.is_authenticated, userData) : null)
 
-        String body = buildMessage(eventId, message, checksum, exception, loggerName, logLevel, request, user, timestamp)
-        doSend(body, timestamp)
+            String body = buildMessage(eventId, message, checksum, exception, loggerName, logLevel, request, user, timestamp)
+            doSend(body, timestamp)
+        }
     }
 
     private void doSend(String message, long timestamp) {
