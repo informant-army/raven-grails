@@ -11,9 +11,9 @@ class SentryAppender extends AppenderSkeleton {
 
     SentryClient sentryClient
 
-    public SentryAppender() {
+    public SentryAppender(SentryClient client) {
         super()
-        sentryClient = new SentryClient(getDSN())
+        sentryClient = client
         setThreshold(Level.ERROR)
     }
 

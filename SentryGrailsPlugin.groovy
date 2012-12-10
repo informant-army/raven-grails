@@ -2,9 +2,12 @@ import org.apache.log4j.Logger
 import grails.util.Environment
 
 import grails.plugins.sentry.SentryAppender
+import grails.plugins.sentry.SentryClient
+import grails.plugins.sentry.SentryConfiguration
 
 class SentryGrailsPlugin {
     def version = "0.4"
+    def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
     def pluginExcludes = [
@@ -31,7 +34,15 @@ class SentryGrailsPlugin {
     }
 
     def doWithSpring = {
-        sentryAppender(SentryAppender)
+        ConfigObject config = new ConfigObject()
+        config['clientVersion'] = clientVersion
+        def configuration = new SentryConfiguration(config.merge(application.config.grails.plugins.sentry.clone()))
+
+        sentryClient(SentryClient, configuration) { bean ->
+            bean.autowire = "byName"
+        }
+
+        sentryAppender(SentryAppender, ref('sentryClient'))
     }
 
     def doWithDynamicMethods = { ctx ->
