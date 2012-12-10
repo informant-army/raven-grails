@@ -1,15 +1,16 @@
 package grails.plugins.sentry
 
 import java.util.Date
+import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
 import org.apache.commons.lang.time.DateFormatUtils
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
+import org.springframework.web.context.request.RequestContextHolder
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import grails.plugins.sentry.interfaces.User
-import java.util.UUID
 
 class SentryClient {
 
@@ -81,6 +82,11 @@ class SentryClient {
 
     private String buildMessageBody(String jsonMessage) {
         return encodeBase64String(jsonMessage.getBytes())
+    }
+
+    def setUserData(Map user) {
+        def request = RequestContextHolder.currentRequestAttributes().getRequest()
+        request['sentryUserData'] = user
     }
 
 //// Utils

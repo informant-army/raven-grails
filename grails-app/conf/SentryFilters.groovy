@@ -1,9 +1,9 @@
 package grails.plugins.sentry.test
 
-import grails.plugins.sentry.SentryService
+import grails.plugins.sentry.SentryClient
 
 class SentryFilters {
-    def sentryService
+    def sentryClient
     // def springSecurityService
 
     def filters = {
@@ -12,7 +12,7 @@ class SentryFilters {
                 // def user = springSecurityService.currentUser
                 def user = [id: 123, is_authenticated: true, email: "user@email.com", username: "username"]
                 if (user) {
-                   sentryService.setUserData(user)
+                   sentryClient.setUserData(user)
                 }
             }
         }

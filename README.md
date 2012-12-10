@@ -37,13 +37,13 @@ environments {
 }
 ```
 
-To set the current user data to be included in the logged messages sent to Sentry use the method `sentryService.setUserData` passing a Map containing the user data. The supported keys are id, username, email and is\_authenticated. The only key that is mandatory is is\_authenticated. If you are using SpringSecurity in your application, you can get the current user using the method `springSecurityService.currentUser`. Above an example of Grails filter to set the user data:
+To set the current user data to be included in the logged messages sent to Sentry use the method `sentryClient.setUserData` passing a Map containing the user data. The supported keys are id, username, email and is\_authenticated. The only key that is mandatory is is\_authenticated. If you are using SpringSecurity in your application, you can get the current user using the method `springSecurityService.currentUser`. Above an example of Grails filter to set the user data:
 
 ```groovy
-import grails.plugins.sentry.SentryService
+import grails.plugins.sentry.SentryClient
 
 class SentryFilters {
-    def sentryService
+    def sentryClient
     def springSecurityService
 
     def filters = {
@@ -52,9 +52,9 @@ class SentryFilters {
                 if (springSecurityService.isLoggedIn()) {
                     def user = springSecurityService.currentUser
                     def userData = [id: user.id, is_authenticated: true, email: user.email, username: user.username]
-                    sentryService.setUserData(userData)
+                    sentryClient.setUserData(userData)
                 } else {
-                    sentryService.setUserData([is_authenticated:false])
+                    sentryClient.setUserData([is_authenticated:false])
                 }
             }
         }
@@ -74,17 +74,17 @@ grails.plugins.sentry.serverName = 'dev.server.com'
 
 The Log4j Appender is automatically configured by plugin, you have just to set enabled environments in `Config.groovy` file as shown in Configuration section. All application exceptions will be logged on sentry by the appender. The appender is configured to log just the ERROR, WARN and FATAL levels. To log manually just use the `log.error` method.
 
-### SentryService
+### SentryClient
 
-You also can use the sentryService to sent info messages to Sentry:
+You also can use the sentryClient to sent info messages to Sentry:
 
 ```groovy
-import grails.plugins.sentry.SentryService
+import grails.plugins.sentry.SentryClient
 
-def sentryService
+def sentryClient
 
-sentryService.logInfo(String message)
-sentryService.logMessage(String message, String loggerClass, String logLevel)
-sentryService.logException(Throwable exception)
-sentryService.logException(Throwable exception, String loggerClass, String logLevel)
+sentryClient.logInfo(String message)
+sentryClient.logMessage(String message, String loggerClass, String logLevel)
+sentryClient.logException(Throwable exception)
+sentryClient.logException(Throwable exception, String loggerClass, String logLevel, HttpServletRequest request)
 ```

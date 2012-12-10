@@ -1,38 +1,32 @@
 package grails.plugins.sentry.test
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import grails.plugins.sentry.SentryClient
 
 class TestController {
-    def sentryService
+    def sentryClient
+
+    def clientInfo = {
+        sentryClient.logInfo("SentryClient logInfo test.")
+        render(view:'/index')
+    }
+
+    def clientMessage = {
+        sentryClient.logMessage("SentryClient logMessage test.", "root", "info")
+        render(view:'/index')
+    }
+
+    def clientExcetion = {
+        sentryClient.logException(new Exception("SentryClient logExcetion test."))
+        render(view:'/index')
+    }
 
     def error = {
-        throw new Exception("Exception test")
-        render(view:'/index')
-    }
-
-    def serviceInfo = {
-        sentryService.logInfo("Service logInfo test")
-        render(view:'/index')
-    }
-
-    def serviceException = {
-        sentryService.logException(new Exception('Service logException test'))
-        render(view:'/index')
-    }
-
-    def client = {
-        SentryClient client = new SentryClient(getDSN())
-        client.logInfo("Client logInfo test")
+        throw new Exception("Exception test.")
         render(view:'/index')
     }
 
     def testLog = {
-        log.error("Test Sentry Appender.")
+        log.error("Test Sentry Log4j Appender.")
         render(view:'/index')
-    }
-
-    private String getDSN() {
-        return ConfigurationHolder.config.grails.plugins.sentry.dsn
     }
 }
