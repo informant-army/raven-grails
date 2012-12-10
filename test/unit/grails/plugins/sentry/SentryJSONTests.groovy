@@ -3,20 +3,18 @@ package grails.plugins.sentry
 import grails.test.*
 import grails.plugins.sentry.TestUtils
 import org.codehaus.groovy.grails.web.json.JSONObject
-import net.kencochrane.sentry.RavenConfig
-import net.kencochrane.sentry.RavenUtils
 import javax.servlet.http.HttpServletRequest
 import grails.plugins.sentry.interfaces.User
 
 class SentryJSONTests extends GroovyTestCase {
 
-    String dsn = 'https://PUBLIC_KEY:SECRET_KEY@app.getsentry.com/id'
-    RavenConfig config
+    String dsn = 'https://PUBLIC_KEY:SECRET_KEY@app.getsentry.com/123'
+    SentryConfiguration  config
     Exception testException
 
     protected void setUp() {
+        config = new SentryConfiguration([dsn:dsn, serverName:'serverName'])
         testException = new Exception('Message')
-        config = new RavenConfig(dsn)
 
         super.setUp()
     }
@@ -59,7 +57,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildJSON() {
-        String result = SentryJSON.build('message', testException, 'logClass', 'error', null, null, 'timestamp', 'Raven-Sentry-test')
+        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assertBaseJSONString(result)
     }
 
@@ -68,7 +66,7 @@ class SentryJSONTests extends GroovyTestCase {
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
         JSONObject httpJSON = SentryJSON.buildHttp(request)
-        String result = SentryJSON.build('message', testException, 'logClass', 'error', request, null, 'timestamp', 'Raven-Sentry-test')
+        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', request, null, 'timestamp', config)
 
         assertBaseJSONString(result)
         assert result =~ /"sentry.interfaces.Http"/
@@ -83,19 +81,28 @@ class SentryJSONTests extends GroovyTestCase {
     def void testBuildJSONWithUserData() {
         User user = new User(true, [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com'])
 
-        String result = SentryJSON.build('message', testException, 'logClass', 'error', null, user, 'timestamp', 'Raven-Sentry-test')
+        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, user, 'timestamp', config)
 
         assertBaseJSONString(result)
         assert result =~ /\"sentry\.interfaces\.User\":\{\"id\":\"123\",\"username\":\"username\",\"email\":\"user@email.com\",\"is_authenticated\":true\}/
     }
 
+    def void testServerName() {
+        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        assert result =~ /"server_name":"serverName"/
+
+        config = new SentryConfiguration([dsn:dsn])
+        result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        assert result =~ /"server_name":"${InetAddress.localHost?.canonicalHostName}"/
+    }
+
 // LOCAL ASSERTION
 
     private void assertBaseJSONString(String result) {
-        assert result =~ /"server_name":"${RavenUtils.getHostname()}"/
+        assert result =~ /"event_id":"eventId"/
         assert result =~ /"message":"message"/
         assert result =~ /"timestamp":"timestamp"/
-        assert result =~ /"project":"Raven-Sentry-test"/
+        assert result =~ /"project":"$config.projectId"/
         assert result =~ /"level":"error","logger":"logClass"/
         assert result =~ /"culprit":"sun.reflect.NativeConstructorAccessorImpl.newInstance0"/
         assert result =~ /"sentry\.interfaces\.Stacktrace":/

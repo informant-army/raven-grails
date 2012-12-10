@@ -27,16 +27,17 @@ class SentryJSON {
      *     "module": "__builtins__"
      * }
      */
-    public static String build(String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, String projectId) {
+    public static String build(String eventId, String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, SentryConfiguration config) {
         JSONObject obj = new JSONObject([
-            event_id: RavenUtils.getRandomUUID(), //Hexadecimal string representing a uuid4 value.
+            event_id: eventId,
             checksum: RavenUtils.calculateChecksum(message),
             timestamp: timestamp,
             message: message,
-            project: projectId,
+            project: config.projectId,
             level: logLevel,
             logger: loggerClass,
-            server_name: RavenUtils.getHostname()
+            platform: config.platform,
+            server_name: config.serverName
         ])
         if (exception) {
             obj.put("culprit", SentryJSON.determineCulprit(exception))

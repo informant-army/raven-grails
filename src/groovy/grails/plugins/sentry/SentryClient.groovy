@@ -1,6 +1,5 @@
 package grails.plugins.sentry
 
-import net.kencochrane.sentry.RavenConfig
 import java.util.Date
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
@@ -55,8 +54,9 @@ class SentryClient {
     }
 
     private void send(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData) {
+        String eventId = generateEventId()
         long timestamp = timestampLong()
-        String body = buildMessage(message, exception, loggerName, logLevel, request, userData, timestamp)
+        String body = buildMessage(eventId, message, exception, loggerName, logLevel, request, userData, timestamp)
         doSend(body, timestamp)
     }
 
@@ -68,9 +68,9 @@ class SentryClient {
         }
     }
 
-    private String buildMessage(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, Long timestamp) {
+    private String buildMessage(String eventId, String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, Long timestamp) {
         User user = (userData ? new User(userData.is_authenticated, userData) : null)
-        String jsonMessage = SentryJSON.build(message, exception, loggerName, logLevel, request, user, timestampString(timestamp), config.projectId)
+        String jsonMessage = SentryJSON.build(eventId, message, exception, loggerName, logLevel, request, user, timestampString(timestamp), config)
 
         return buildMessageBody(jsonMessage)
     }
@@ -81,8 +81,12 @@ class SentryClient {
 
 //// Utils
 
+    private String generateEventId() {
+        return (UUID.randomUUID() as String).replaceAll("-", "")
+    }
+
     private long timestampLong() {
-        return System.currentTimeMillis();
+        return System.currentTimeMillis()
     }
 
     private String timestampString(long timestamp) {

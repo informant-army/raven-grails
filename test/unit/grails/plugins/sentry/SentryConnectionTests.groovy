@@ -1,7 +1,6 @@
 package grails.plugins.sentry
 
 import grails.test.*
-import net.kencochrane.sentry.RavenConfig
 
 class SentryConnectionTests extends GroovyTestCase {
     protected void setUp() {
