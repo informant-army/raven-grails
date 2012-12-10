@@ -15,7 +15,7 @@ Clone the repository and build the plugin:
 Copy the generated .zip to your applications /lib directory add the following to your `BuildConfig.groovy`:
 
 ```groovy
-compile ":sentry:0.3.1"
+compile ":sentry:0.4"
 ```
 
 ## Configuration
@@ -37,6 +37,7 @@ environments {
     }
 }
 ```
+
 To set the current user data to be included in the logged messages sent to Sentry use the method `sentryService.setUserData` passing a Map containing the user data. The supported keys are id, username, email and is\_authenticated. The only key that is mandatory is is\_authenticated. If you are using SpringSecurity in your application, you can get the current user using the method `springSecurityService.currentUser`. Above an example of Grails filter to set the user data:
 
 ```groovy
@@ -60,6 +61,12 @@ class SentryFilters {
         }
     }
 }
+```
+
+You can also set the server name, but it is recommended to don't set this configuration and let the plugin to resolve it.
+
+```groovy
+grails.plugins.sentry.serverName = 'dev.server.com'
 ```
 
 ## Usage
