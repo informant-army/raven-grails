@@ -12,13 +12,11 @@ class SentryJSONTests extends GroovyTestCase {
 
     String dsn = 'https://PUBLIC_KEY:SECRET_KEY@app.getsentry.com/id'
     RavenConfig config
-    SentryJSON json
     Exception testException
 
     protected void setUp() {
         testException = new Exception('Message')
         config = new RavenConfig(dsn)
-        json = new SentryJSON(config)
 
         super.setUp()
     }
@@ -28,7 +26,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildException() {
-        def result = json.buildException(testException)
+        def result = SentryJSON.buildException(testException)
 
         assertNotNull result
         assertEquals 3, result.size()
@@ -38,7 +36,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildStacktrace() {
-        def result = json.buildStacktrace(testException)
+        def result = SentryJSON.buildStacktrace(testException)
 
         assertNotNull result
         assertNotNull result.get('frames')
@@ -46,7 +44,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testDetermineCulprit() {
-        String result = json.determineCulprit(testException)
+        String result = SentryJSON.determineCulprit(testException)
 
         assertEquals "sun.reflect.NativeConstructorAccessorImpl.newInstance0", result
     }
@@ -55,13 +53,13 @@ class SentryJSONTests extends GroovyTestCase {
         Map map = TestUtils.reloadFossilizedHttpServletRequest(this)
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
-        JSONObject json = json.buildHttp(request)
+        JSONObject json = SentryJSON.buildHttp(request)
         assertNotNull json
         assertEquals map.url.toString().split('.dispatch').first(), json.get('url')
     }
 
     def void testBuildJSON() {
-        String result = json.build('message', testException, 'logClass', 'error', null, null, 'timestamp')
+        String result = SentryJSON.build('message', testException, 'logClass', 'error', null, null, 'timestamp', 'Raven-Sentry-test')
         assertBaseJSONString(result)
     }
 
@@ -69,8 +67,8 @@ class SentryJSONTests extends GroovyTestCase {
         Map map = TestUtils.reloadFossilizedHttpServletRequest(this)
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
-        JSONObject httpJSON = json.buildHttp(request)
-        String result = json.build('message', testException, 'logClass', 'error', request, null, 'timestamp')
+        JSONObject httpJSON = SentryJSON.buildHttp(request)
+        String result = SentryJSON.build('message', testException, 'logClass', 'error', request, null, 'timestamp', 'Raven-Sentry-test')
 
         assertBaseJSONString(result)
         assert result =~ /"sentry.interfaces.Http"/
@@ -85,7 +83,7 @@ class SentryJSONTests extends GroovyTestCase {
     def void testBuildJSONWithUserData() {
         User user = new User(true, [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com'])
 
-        String result = json.build('message', testException, 'logClass', 'error', null, user, 'timestamp')
+        String result = SentryJSON.build('message', testException, 'logClass', 'error', null, user, 'timestamp', 'Raven-Sentry-test')
 
         assertBaseJSONString(result)
         assert result =~ /\"sentry\.interfaces\.User\":\{\"id\":\"123\",\"username\":\"username\",\"email\":\"user@email.com\",\"is_authenticated\":true\}/
@@ -97,7 +95,7 @@ class SentryJSONTests extends GroovyTestCase {
         assert result =~ /"server_name":"${RavenUtils.getHostname()}"/
         assert result =~ /"message":"message"/
         assert result =~ /"timestamp":"timestamp"/
-        assert result =~ /"project":"id"/
+        assert result =~ /"project":"Raven-Sentry-test"/
         assert result =~ /"level":"error","logger":"logClass"/
         assert result =~ /"culprit":"sun.reflect.NativeConstructorAccessorImpl.newInstance0"/
         assert result =~ /"sentry\.interfaces\.Stacktrace":/

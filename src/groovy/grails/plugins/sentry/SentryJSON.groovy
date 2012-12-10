@@ -3,19 +3,12 @@ package grails.plugins.sentry
 import org.codehaus.groovy.grails.web.json.*
 import javax.servlet.http.HttpServletRequest
 import net.kencochrane.sentry.RavenUtils
-import net.kencochrane.sentry.RavenConfig
 import grails.plugins.sentry.interfaces.*
 
 /*
  * http://sentry.readthedocs.org/en/latest/developer/interfaces/index.html
  */
 class SentryJSON {
-
-    private RavenConfig config
-
-    public SentryJSON(RavenConfig config) {
-        this.config = config
-    }
 
     /*
      * Main JSON
@@ -34,25 +27,24 @@ class SentryJSON {
      *     "module": "__builtins__"
      * }
      */
-    String build(String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp) {
-
+    public static String build(String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, String projectId) {
         JSONObject obj = new JSONObject([
             event_id: RavenUtils.getRandomUUID(), //Hexadecimal string representing a uuid4 value.
             checksum: RavenUtils.calculateChecksum(message),
             timestamp: timestamp,
             message: message,
-            project: this.config.getProjectId(),
+            project: projectId,
             level: logLevel,
             logger: loggerClass,
             server_name: RavenUtils.getHostname()
         ])
         if (exception) {
-            obj.put("culprit", determineCulprit(exception))
-            obj.put("sentry.interfaces.Exception", buildException(exception))
-            obj.put("sentry.interfaces.Stacktrace", buildStacktrace(exception))
+            obj.put("culprit", SentryJSON.determineCulprit(exception))
+            obj.put("sentry.interfaces.Exception", SentryJSON.buildException(exception))
+            obj.put("sentry.interfaces.Stacktrace", SentryJSON.buildStacktrace(exception))
         }
         if (request) {
-            obj.put("sentry.interfaces.Http", buildHttp(request))
+            obj.put("sentry.interfaces.Http", SentryJSON.buildHttp(request))
         }
         if (user) {
             obj.put("sentry.interfaces.User", user.toJSON())
@@ -68,7 +60,7 @@ class SentryJSON {
      *   "module": "__builtins__"
      * }
     */
-    JSONObject buildException(Throwable exception) {
+    public static JSONObject buildException(Throwable exception) {
         return new JSONObject([
             type: exception.getClass().getSimpleName(),
             value: exception.getMessage(),
@@ -98,7 +90,7 @@ class SentryJSON {
      * }]
      * }
      */
-    JSONObject buildStacktrace(Throwable exception) {
+    public static JSONObject buildStacktrace(Throwable exception) {
         JSONArray array = new JSONArray()
         Throwable cause = exception
         while (cause != null) {
@@ -127,11 +119,11 @@ class SentryJSON {
         return new JSONObject([frames: array])
     }
 
-    JSONObject buildHttp(HttpServletRequest request) {
+    public static JSONObject buildHttp(HttpServletRequest request) {
         return new SentryHttp(request).toJSONObject()
     }
 
-    String determineCulprit(Throwable exception) {
+    public static String determineCulprit(Throwable exception) {
         Throwable cause = exception
         String culprit = null
         StackTraceElement[] elements = cause.getStackTrace()

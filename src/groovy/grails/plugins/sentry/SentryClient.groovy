@@ -67,8 +67,7 @@ class SentryClient {
 
     private String buildMessage(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, Long timestamp) {
         User user = (userData ? new User(userData.is_authenticated, userData) : null)
-        SentryJSON json = new SentryJSON(this.config)
-        String jsonMessage = json.build(message, exception, loggerName, logLevel, request, user, timestampString(timestamp))
+        String jsonMessage = SentryJSON.build(message, exception, loggerName, logLevel, request, user, timestampString(timestamp), config.projectId)
 
         return buildMessageBody(jsonMessage)
     }
