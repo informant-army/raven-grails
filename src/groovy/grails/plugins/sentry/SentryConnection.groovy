@@ -1,6 +1,8 @@
 package grails.plugins.sentry
 
-import net.kencochrane.sentry.RavenUtils
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import java.security.SignatureException
 import java.net.Proxy
 
 public class SentryConnection {
@@ -31,7 +33,7 @@ public class SentryConnection {
      * }
      */
     public void send(String messageBody, long timestamp) throws IOException {
-        String hmacSignature = RavenUtils.getSignature(messageBody, timestamp, config.secretKey)
+        String hmacSignature = getSignature("$timestamp $messageBody", config.secretKey)
 
         HttpURLConnection connection = getConnection()
         connection.setRequestMethod("POST")
@@ -56,5 +58,19 @@ public class SentryConnection {
 
     private HttpURLConnection getConnection() throws IOException {
         return (HttpURLConnection) config.endpoint.openConnection(Proxy.NO_PROXY)
+    }
+
+    private getSignature(String data, String key) throws SignatureException {
+        String result
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), "HmacSHA1")
+            Mac mac = Mac.getInstance("HmacSHA1")
+            mac.init(signingKey)
+            byte[] rawHmac = mac.doFinal(data.getBytes())
+            result = rawHmac.encodeHex()
+        } catch (Exception e) {
+            throw new SignatureException("Failed to generate HMAC: " + e.getMessage())
+        }
+        return result
     }
 }

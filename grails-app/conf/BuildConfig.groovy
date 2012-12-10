@@ -29,6 +29,5 @@ grails.project.dependency.resolution = {
               "org.grails.plugins:rest-client-builder:1.0.3") {
             export = false
         }
-        compile 'net.kencochrane:raven-java:0.6-SNAPSHOT'
     }
 }
