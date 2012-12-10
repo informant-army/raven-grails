@@ -2,7 +2,6 @@ package grails.plugins.sentry
 
 import org.codehaus.groovy.grails.web.json.*
 import javax.servlet.http.HttpServletRequest
-import net.kencochrane.sentry.RavenUtils
 import grails.plugins.sentry.interfaces.*
 
 /*
@@ -27,10 +26,10 @@ class SentryJSON {
      *     "module": "__builtins__"
      * }
      */
-    public static String build(String eventId, String message, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, SentryConfiguration config) {
+    public static String build(String eventId, String message, String checksum, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, SentryConfiguration config) {
         JSONObject obj = new JSONObject([
             event_id: eventId,
-            checksum: RavenUtils.calculateChecksum(message),
+            checksum: checksum,
             timestamp: timestamp,
             message: message,
             project: config.projectId,

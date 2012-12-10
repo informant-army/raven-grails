@@ -57,7 +57,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildJSON() {
-        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assertBaseJSONString(result)
     }
 
@@ -66,7 +66,7 @@ class SentryJSONTests extends GroovyTestCase {
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
         JSONObject httpJSON = SentryJSON.buildHttp(request)
-        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', request, null, 'timestamp', config)
+        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', request, null, 'timestamp', config)
 
         assertBaseJSONString(result)
         assert result =~ /"sentry.interfaces.Http"/
@@ -81,18 +81,18 @@ class SentryJSONTests extends GroovyTestCase {
     def void testBuildJSONWithUserData() {
         User user = new User(true, [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com'])
 
-        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, user, 'timestamp', config)
+        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, user, 'timestamp', config)
 
         assertBaseJSONString(result)
         assert result =~ /\"sentry\.interfaces\.User\":\{\"id\":\"123\",\"username\":\"username\",\"email\":\"user@email.com\",\"is_authenticated\":true\}/
     }
 
     def void testServerName() {
-        String result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assert result =~ /"server_name":"serverName"/
 
         config = new SentryConfiguration([dsn:dsn])
-        result = SentryJSON.build('eventId', 'message', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assert result =~ /"server_name":"${InetAddress.localHost?.canonicalHostName}"/
     }
 
@@ -101,6 +101,7 @@ class SentryJSONTests extends GroovyTestCase {
     private void assertBaseJSONString(String result) {
         assert result =~ /"event_id":"eventId"/
         assert result =~ /"message":"message"/
+        assert result =~ /"checksum":"checksum"/
         assert result =~ /"timestamp":"timestamp"/
         assert result =~ /"project":"$config.projectId"/
         assert result =~ /"level":"error","logger":"logClass"/

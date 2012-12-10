@@ -10,6 +10,7 @@ import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
 import grails.plugins.sentry.interfaces.User
 import java.util.UUID
+import java.security.MessageDigest
 
 class SentryClient {
 
@@ -55,8 +56,11 @@ class SentryClient {
 
     private void send(String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData) {
         String eventId = generateEventId()
+        String checksum = generateChecksum(message)
         long timestamp = timestampLong()
-        String body = buildMessage(eventId, message, exception, loggerName, logLevel, request, userData, timestamp)
+        User user = (userData ? new User(userData.is_authenticated, userData) : null)
+
+        String body = buildMessage(eventId, message, checksum, exception, loggerName, logLevel, request, user, timestamp)
         doSend(body, timestamp)
     }
 
@@ -68,9 +72,8 @@ class SentryClient {
         }
     }
 
-    private String buildMessage(String eventId, String message, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, Map userData, Long timestamp) {
-        User user = (userData ? new User(userData.is_authenticated, userData) : null)
-        String jsonMessage = SentryJSON.build(eventId, message, exception, loggerName, logLevel, request, user, timestampString(timestamp), config)
+    private String buildMessage(String eventId, String message, String checksum, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, User user, Long timestamp) {
+        String jsonMessage = SentryJSON.build(eventId, message, checksum, exception, loggerName, logLevel, request, user, timestampString(timestamp), config)
 
         return buildMessageBody(jsonMessage)
     }
@@ -83,6 +86,12 @@ class SentryClient {
 
     private String generateEventId() {
         return (UUID.randomUUID() as String).replaceAll("-", "")
+    }
+
+    private String generateChecksum(String message) {
+        MessageDigest digest = MessageDigest.getInstance("MD5")
+        digest.update(message.bytes)
+        (new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')) as String
     }
 
     private long timestampLong() {
