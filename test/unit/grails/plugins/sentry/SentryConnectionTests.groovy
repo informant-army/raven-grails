@@ -14,10 +14,9 @@ class SentryConnectionTests extends GroovyTestCase {
 
    def void testSentryConnectionConstructor() {
         String dsn = 'https://PUBLIC_KEY:SECRET_KEY@app.getsentry.com/id'
-        RavenConfig config = new RavenConfig(dsn)
+        SentryConfiguration config = new SentryConfiguration([dsn:dsn, active:true])
         SentryConnection connector = new SentryConnection(config)
 
-        assertNotNull connector.endpoint
         assertEquals config.getSentryURL().toString(), connector.config.getSentryURL().toString()
     }
 }

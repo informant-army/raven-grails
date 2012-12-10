@@ -10,17 +10,20 @@ import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
 import grails.plugins.sentry.interfaces.User
+import java.util.UUID
 
 class SentryClient {
 
     private URL endpoint
     private SentryConnection connection
-    private RavenConfig config
-    private String dsn
+    private SentryConfiguration config
 
     public SentryClient(String dsn) {
-        this.dsn = dsn
-        this.config = new RavenConfig(dsn)
+        this(new SentryConfiguration([dsn:dsn]))
+    }
+
+    public SentryClient(SentryConfiguration config) {
+        this.config = config
         this.connection = new SentryConnection(config)
     }
 

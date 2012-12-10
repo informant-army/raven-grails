@@ -1,18 +1,14 @@
 package grails.plugins.sentry
 
-import net.kencochrane.sentry.RavenConfig
 import net.kencochrane.sentry.RavenUtils
+import java.net.Proxy
 
 public class SentryConnection {
 
-    private static final CLIENT_VERSION = 'Raven-grails 0.1'
+    private SentryConfiguration config
 
-    private RavenConfig config
-    private URL endpoint
-
-    public SentryConnection(RavenConfig config) {
+    public SentryConnection(SentryConfiguration config) {
         this.config = config
-        this.endpoint = new URL(config.getSentryURL())
     }
 
     /*
@@ -35,13 +31,13 @@ public class SentryConnection {
      * }
      */
     public void send(String messageBody, long timestamp) throws IOException {
-        String hmacSignature = RavenUtils.getSignature(messageBody, timestamp, config.getSecretKey())
+        String hmacSignature = RavenUtils.getSignature(messageBody, timestamp, config.secretKey)
 
         HttpURLConnection connection = getConnection()
         connection.setRequestMethod("POST")
         connection.setDoOutput(true)
         connection.setReadTimeout(10000)
-        connection.setRequestProperty("X-Sentry-Auth", buildAuthHeader(hmacSignature, timestamp, config.getPublicKey()))
+        connection.setRequestProperty("X-Sentry-Auth", buildAuthHeader(hmacSignature, timestamp, config.publicKey))
         OutputStream output = connection.getOutputStream()
         output.write(messageBody.getBytes())
         output.close()
@@ -54,11 +50,11 @@ public class SentryConnection {
         String header = "Sentry sentry_version=2.0,sentry_signature=${hmacSignature},"
         header += "sentry_timestamp=${timestamp},"
         header += "sentry_key=${publicKey},"
-        header += "sentry_client=${CLIENT_VERSION}"
+        header += "sentry_client=${config.clientVersion}"
         return header
     }
 
     private HttpURLConnection getConnection() throws IOException {
-        return (HttpURLConnection) endpoint.openConnection(config.getProxy())
+        return (HttpURLConnection) config.endpoint.openConnection(Proxy.NO_PROXY)
     }
 }
