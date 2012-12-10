@@ -10,7 +10,6 @@ import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
 import grails.plugins.sentry.interfaces.User
 import java.util.UUID
-import java.security.MessageDigest
 
 class SentryClient {
 
@@ -89,9 +88,7 @@ class SentryClient {
     }
 
     private String generateChecksum(String message) {
-        MessageDigest digest = MessageDigest.getInstance("MD5")
-        digest.update(message.bytes)
-        (new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')) as String
+        return message.encodeAsMD5()
     }
 
     private long timestampLong() {
