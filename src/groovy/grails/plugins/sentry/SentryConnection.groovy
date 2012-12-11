@@ -66,10 +66,21 @@ public class SentryConnection {
             SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), "HmacSHA1")
             Mac mac = Mac.getInstance("HmacSHA1")
             mac.init(signingKey)
-            byte[] rawHmac = mac.doFinal(data.getBytes())
-            result = rawHmac.encodeHex()
+            mac.update(data.getBytes())
+            byte[] rawHmac = mac.doFinal()
+            result = encodeHex(rawHmac)
         } catch (Exception e) {
             throw new SignatureException("Failed to generate HMAC: " + e.getMessage())
+        }
+        return result
+    }
+
+    private String encodeHex(byte[] aInput) {
+        String result = ""
+        char[] digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
+        aInput.each { b ->
+            result << digits[(b & 0xf0) >> 4]
+            result << digits[b & 0x0f]
         }
         return result
     }
