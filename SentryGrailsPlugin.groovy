@@ -6,11 +6,12 @@ import grails.plugins.sentry.SentryClient
 import grails.plugins.sentry.SentryConfiguration
 
 class SentryGrailsPlugin {
-    def version = "0.4"
+    def version = "0.4.1"
     def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
     def pluginExcludes = [
+            "grails-app/conf/SentryFilters.groovy",
             "grails-app/views/**",
             "grails-app/controllers/**",
             "grails-app/services/test/**",
