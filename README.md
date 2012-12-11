@@ -1,6 +1,6 @@
 # raven-grails
 
-[![Current Status](https://travis-ci.org/informant-army/raven-grails.png)](https://travis-ci.org/informant-army/raven-grails)
+[![Build Status](https://secure.travis-ci.org/informant-army/raven-grails.png?branch=master)](https://travis-ci.org/informant-army/raven-grails)
 
 raven-grails is a Grails client for integrating apps with [Sentry](http://www.getsentry.com).
 
