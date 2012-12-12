@@ -83,8 +83,8 @@ import grails.plugins.raven.RavenClient
 
 def ravenClient
 
-ravenClient.logInfo(String message)
-ravenClient.logMessage(String message, String loggerClass, String logLevel)
-ravenClient.logException(Throwable exception)
-ravenClient.logException(Throwable exception, String loggerClass, String logLevel, HttpServletRequest request)
+ravenClient.captureMessage(String message)
+ravenClient.captureMessage(String message, String loggerClass, String logLevel)
+ravenClient.captureException(Throwable exception)
+ravenClient.captureException(Throwable exception, String loggerClass, String logLevel, HttpServletRequest request)
 ```

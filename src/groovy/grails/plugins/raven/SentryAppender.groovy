@@ -25,7 +25,7 @@ class SentryAppender extends AppenderSkeleton {
             def grailsRequest = (GrailsWebRequest) RequestContextHolder.requestAttributes
             def request = grailsRequest?.getRequest()
             def currentUser = request ? request['sentryUserData'] : null
-            ravenClient.logEvent(event, request, currentUser)
+            ravenClient.captureEvent(event, request, currentUser)
         }
     }
 

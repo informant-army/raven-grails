@@ -27,23 +27,23 @@ class RavenClient {
         this.connection = new Connection(config)
     }
 
-    def logInfo(String message) {
+    def captureMessage(String message) {
         send(message, null, 'root', 'info', null, null)
     }
 
-    def logMessage(String message, String loggerName, String logLevel) {
+    def captureMessage(String message, String loggerName, String logLevel) {
         send(exception.getMessage(), null, loggerName, logLevel, null, null)
     }
 
-    def logException(Throwable exception) {
+    def captureException(Throwable exception) {
         send(exception.getMessage(), null, 'root', 'error', null, null)
     }
 
-    def logException(Throwable exception, String loggerName, String logLevel, HttpServletRequest request) {
+    def captureException(Throwable exception, String loggerName, String logLevel, HttpServletRequest request) {
         send(exception.getMessage(), exception, loggerName, logLevel, request, null)
     }
 
-    def logEvent(LoggingEvent event, HttpServletRequest request, Map currentUser) {
+    def captureEvent(LoggingEvent event, HttpServletRequest request, Map currentUser) {
         long timestamp = timestampLong()
         Level level = event.getLevel()
         String logLevel = (level ? level.toString().toLowerCase() : "root")

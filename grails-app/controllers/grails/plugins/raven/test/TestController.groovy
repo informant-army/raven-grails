@@ -6,17 +6,17 @@ class TestController {
     def ravenClient
 
     def clientInfo = {
-        ravenClient.logInfo("RavenClient logInfo test.")
+        ravenClient.captureInfo("RavenClient logInfo test.")
         render(view:'/index')
     }
 
     def clientMessage = {
-        ravenClient.logMessage("RavenClient logMessage test.", "root", "info")
+        ravenClient.captureMessage("RavenClient logMessage test.", "root", "info")
         render(view:'/index')
     }
 
     def clientExcetion = {
-        ravenClient.logException(new Exception("RavenClient logExcetion test."))
+        ravenClient.captureException(new Exception("RavenClient logExcetion test."))
         render(view:'/index')
     }
 
