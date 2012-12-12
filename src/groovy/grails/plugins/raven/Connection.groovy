@@ -33,7 +33,6 @@ public class Connection {
      * }
      */
     public void send(String messageBody, long timestamp) throws IOException {
-        println "AQUI"
         String hmacSignature = getSignature("$timestamp $messageBody", config.secretKey)
 
         HttpURLConnection connection = getConnection()
