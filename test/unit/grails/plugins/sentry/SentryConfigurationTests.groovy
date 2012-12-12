@@ -48,14 +48,26 @@ class SentryConfigurationTests extends GrailsUnitTestCase {
         assertEquals "/path/to/api", config.path
     }
 
-    public void testConfigurationWithPort() {
-        mockConfig('''
-            grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com:666/123"
-        ''')
+    public void testConfigurationSentryURL() {
+        // No port configuration
+        mockConfig('''grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/123"''')
+        SentryConfiguration config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
 
+        assertEquals "https://app.getsentry.com/api/store/", config.sentryURL
+
+        // With port configuration
+        mockConfig('''grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com:666/123"''')
+        config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
+
+        assertEquals "https://app.getsentry.com:666/api/store/", config.sentryURL
+    }
+
+    public void testConfigurationWithPort() {
+        mockConfig('''grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com:666/123"''')
         SentryConfiguration config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
 
         assertEquals 666, config.port
+        assertEquals "https://app.getsentry.com:666/api/store/", config.sentryURL
     }
 
     /*public void testNullDSNException() {
@@ -71,9 +83,7 @@ class SentryConfigurationTests extends GrailsUnitTestCase {
     }*/
 
     public void testServerName() {
-        mockConfig('''
-            grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/path/to/api/123"
-        ''')
+        mockConfig('''grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/path/to/api/123"''')
         SentryConfiguration config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
 
         assertEquals InetAddress.localHost?.canonicalHostName, config.serverName
@@ -91,9 +101,7 @@ class SentryConfigurationTests extends GrailsUnitTestCase {
 
     public void testActiveProperty() {
         // Default true
-        mockConfig('''
-            grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/path/to/api/123"
-        ''')
+        mockConfig('''grails.plugins.sentry.dsn = "https://abc:efg@app.getsentry.com/path/to/api/123"''')
         SentryConfiguration config = new SentryConfiguration(ConfigurationHolder.config.grails.plugins.sentry)
 
         assertTrue config.active

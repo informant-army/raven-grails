@@ -37,7 +37,7 @@ class SentryConfiguration {
     }
 
     String getSentryURL() {
-        String portStr = ([0, 80, -1].contains(this.port) ? '' : this.port.toString())
+        String portStr = ([0, 80, -1].contains(this.port) ? '' : ":${this.port.toString()}")
 
         return "$protocol://$host$portStr$path/api/store/"
     }
