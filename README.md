@@ -1,8 +1,8 @@
-# raven-grails
+# Raven-Grails
 
 [![Build Status](https://secure.travis-ci.org/informant-army/raven-grails.png?branch=master)](https://travis-ci.org/informant-army/raven-grails)
 
-raven-grails is a Grails client for integrating apps with [Sentry](http://www.getsentry.com).
+Raven-Grails is a Grails client for integrating apps with [Sentry](http://www.getsentry.com) error reporting API.
 
 ## Installation
 
@@ -15,7 +15,7 @@ Clone the repository and build the plugin:
 Copy the generated .zip to your applications /lib directory add the following to your `BuildConfig.groovy`:
 
 ```groovy
-compile ":raven:0.5"
+compile ":grails-raven:0.5"
 ```
 
 ## Configuration
