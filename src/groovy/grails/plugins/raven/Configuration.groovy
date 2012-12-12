@@ -1,8 +1,8 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import java.net.URL
 
-class SentryConfiguration {
+class Configuration {
 
     String dsn
     String host
@@ -17,7 +17,7 @@ class SentryConfiguration {
     Integer port
     boolean active = true
 
-    SentryConfiguration(Map options = [:]) throws SentryException {
+    Configuration(Map options = [:]) throws RavenException {
         options.each { k,v -> if (this.hasProperty(k)) { this."$k" = v} }
 
         URL url = new URL(dsn)

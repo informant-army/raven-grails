@@ -1,5 +1,4 @@
-package grails.plugins.sentry
-
+package grails.plugins.raven
 import grails.test.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.Cookie
@@ -28,7 +27,7 @@ class TestUtils {
             getCookies: { return TESTCOOKIES },
             getServerName: { return "localhost" },
             getServerPort: { return 8080 },
-        ] as HttpServletRequest;
+        ] as HttpServletRequest
     }
 
     public static Enumeration<String> getHeaderNames(requestMap) {

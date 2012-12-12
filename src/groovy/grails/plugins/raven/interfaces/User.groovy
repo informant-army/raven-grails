@@ -1,4 +1,4 @@
-package grails.plugins.sentry.interfaces
+package grails.plugins.raven.interfaces
 
 import org.codehaus.groovy.grails.web.json.JSONObject
 

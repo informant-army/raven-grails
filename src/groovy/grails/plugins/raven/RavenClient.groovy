@@ -1,4 +1,4 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import java.util.Date
 import java.util.UUID
@@ -10,21 +10,21 @@ import org.apache.log4j.spi.LoggingEvent
 import static org.apache.commons.codec.binary.Base64.encodeBase64String
 import org.springframework.web.context.request.RequestContextHolder
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import grails.plugins.sentry.interfaces.User
+import grails.plugins.raven.interfaces.User
 
-class SentryClient {
+class RavenClient {
 
     private URL endpoint
-    private SentryConnection connection
-    private SentryConfiguration config
+    private Connection connection
+    private Configuration config
 
-    public SentryClient(String dsn) {
-        this(new SentryConfiguration([dsn:dsn]))
+    public RavenClient(String dsn) {
+        this(new Configuration([dsn:dsn]))
     }
 
-    public SentryClient(SentryConfiguration config) {
+    public RavenClient(Configuration config) {
         this.config = config
-        this.connection = new SentryConnection(config)
+        this.connection = new Connection(config)
     }
 
     def logInfo(String message) {
@@ -75,7 +75,7 @@ class SentryClient {
     }
 
     private String buildMessage(String eventId, String message, String checksum, Throwable exception, String loggerName, String logLevel, HttpServletRequest request, User user, Long timestamp) {
-        String jsonMessage = SentryJSON.build(eventId, message, checksum, exception, loggerName, logLevel, request, user, timestampString(timestamp), config)
+        String jsonMessage = Events.build(eventId, message, checksum, exception, loggerName, logLevel, request, user, timestampString(timestamp), config)
 
         return buildMessageBody(jsonMessage)
     }

@@ -1,4 +1,4 @@
-package grails.plugins.sentry.interfaces
+package grails.plugins.raven.interfaces
 
 import javax.servlet.http.HttpServletRequest
 import org.codehaus.groovy.grails.web.json.*
@@ -22,7 +22,7 @@ import static java.util.Collections.list
  *   }
  * }
  */
-class SentryHttp {
+class Http {
 
     Map data = [:]
     Map headers = [:]
@@ -32,7 +32,7 @@ class SentryHttp {
     String query_string
     String cookies
 
-    SentryHttp(HttpServletRequest request) {
+    Http(HttpServletRequest request) {
         this.headers = buildHeaders(request)
         this.url = filterURL(request.getRequestURL())
         this.method = request.getMethod()

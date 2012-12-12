@@ -1,8 +1,8 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import grails.test.*
 
-class SentryClientTests extends GroovyTestCase {
+class RavenClientTests extends GroovyTestCase {
     protected void setUp() {
         super.setUp()
     }

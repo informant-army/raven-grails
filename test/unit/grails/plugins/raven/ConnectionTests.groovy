@@ -1,8 +1,8 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import grails.test.*
 
-class SentryConnectionTests extends GroovyTestCase {
+class ConnectionTests extends GroovyTestCase {
     protected void setUp() {
         super.setUp()
     }
@@ -13,8 +13,8 @@ class SentryConnectionTests extends GroovyTestCase {
 
    def void testSentryConnectionConstructor() {
         String dsn = 'https://PUBLIC_KEY:SECRET_KEY@app.getsentry.com/id'
-        SentryConfiguration config = new SentryConfiguration([dsn:dsn, active:true])
-        SentryConnection connector = new SentryConnection(config)
+        Configuration config = new Configuration([dsn:dsn, active:true])
+        Connection connector = new Connection(config)
 
         assertEquals config.getSentryURL().toString(), connector.config.getSentryURL().toString()
     }

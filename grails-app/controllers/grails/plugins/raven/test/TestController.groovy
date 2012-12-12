@@ -1,22 +1,22 @@
-package grails.plugins.sentry.test
+package grails.plugins.raven.test
 
-import grails.plugins.sentry.SentryClient
+import grails.plugins.raven.RavenClient
 
 class TestController {
-    def sentryClient
+    def ravenClient
 
     def clientInfo = {
-        sentryClient.logInfo("SentryClient logInfo test.")
+        ravenClient.logInfo("RavenClient logInfo test.")
         render(view:'/index')
     }
 
     def clientMessage = {
-        sentryClient.logMessage("SentryClient logMessage test.", "root", "info")
+        ravenClient.logMessage("RavenClient logMessage test.", "root", "info")
         render(view:'/index')
     }
 
     def clientExcetion = {
-        sentryClient.logException(new Exception("SentryClient logExcetion test."))
+        ravenClient.logException(new Exception("RavenClient logExcetion test."))
         render(view:'/index')
     }
 

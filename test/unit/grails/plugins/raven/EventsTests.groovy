@@ -1,19 +1,20 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import grails.test.*
-import grails.plugins.sentry.TestUtils
+import grails.plugins.raven.Events
+import grails.plugins.raven.TestUtils
+import grails.plugins.raven.interfaces.User
 import org.codehaus.groovy.grails.web.json.JSONObject
 import javax.servlet.http.HttpServletRequest
-import grails.plugins.sentry.interfaces.User
 
-class SentryJSONTests extends GroovyTestCase {
+class EventsTests extends GroovyTestCase {
 
     String dsn = 'https://PUBLIC_KEY:SECRET_KEY@app.getsentry.com/123'
-    SentryConfiguration  config
+    Configuration  config
     Exception testException
 
     protected void setUp() {
-        config = new SentryConfiguration([dsn:dsn, serverName:'serverName'])
+        config = new Configuration([dsn:dsn, serverName:'serverName'])
         testException = new Exception('Message')
 
         super.setUp()
@@ -24,7 +25,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildException() {
-        def result = SentryJSON.buildException(testException)
+        def result = Events.buildException(testException)
 
         assertNotNull result
         assertEquals 3, result.size()
@@ -34,7 +35,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testBuildStacktrace() {
-        def result = SentryJSON.buildStacktrace(testException)
+        def result = Events.buildStacktrace(testException)
 
         assertNotNull result
         assertNotNull result.get('frames')
@@ -42,7 +43,7 @@ class SentryJSONTests extends GroovyTestCase {
     }
 
     def void testDetermineCulprit() {
-        String result = SentryJSON.determineCulprit(testException)
+        String result = Events.determineCulprit(testException)
 
         assertEquals "sun.reflect.NativeConstructorAccessorImpl.newInstance0", result
     }
@@ -51,13 +52,13 @@ class SentryJSONTests extends GroovyTestCase {
         Map map = TestUtils.reloadFossilizedHttpServletRequest(this)
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
-        JSONObject json = SentryJSON.buildHttp(request)
+        JSONObject json = Events.buildHttp(request)
         assertNotNull json
         assertEquals map.url.toString().split('.dispatch').first(), json.get('url')
     }
 
     def void testBuildJSON() {
-        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        String result = Events.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assertBaseJSONString(result)
     }
 
@@ -65,8 +66,8 @@ class SentryJSONTests extends GroovyTestCase {
         Map map = TestUtils.reloadFossilizedHttpServletRequest(this)
         HttpServletRequest request = (HttpServletRequest) TestUtils.getHttpServletRequest(map)
 
-        JSONObject httpJSON = SentryJSON.buildHttp(request)
-        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', request, null, 'timestamp', config)
+        JSONObject httpJSON = Events.buildHttp(request)
+        String result = Events.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', request, null, 'timestamp', config)
 
         assertBaseJSONString(result)
         assert result =~ /"sentry.interfaces.Http"/
@@ -81,18 +82,18 @@ class SentryJSONTests extends GroovyTestCase {
     def void testBuildJSONWithUserData() {
         User user = new User(true, [id: 123, is_authenticated: true, username: 'username', email: 'user@email.com'])
 
-        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, user, 'timestamp', config)
+        String result = Events.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, user, 'timestamp', config)
 
         assertBaseJSONString(result)
         assert result =~ /\"sentry\.interfaces\.User\":\{\"id\":\"123\",\"username\":\"username\",\"email\":\"user@email.com\",\"is_authenticated\":true\}/
     }
 
     def void testServerName() {
-        String result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        String result = Events.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assert result =~ /"server_name":"serverName"/
 
-        config = new SentryConfiguration([dsn:dsn])
-        result = SentryJSON.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
+        config = new Configuration([dsn:dsn])
+        result = Events.build('eventId', 'message', 'checksum', testException, 'logClass', 'error', null, null, 'timestamp', config)
         assert result =~ /"server_name":"${InetAddress.localHost?.canonicalHostName}"/
     }
 

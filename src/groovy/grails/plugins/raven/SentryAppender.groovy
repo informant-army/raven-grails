@@ -1,24 +1,23 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import org.apache.log4j.AppenderSkeleton
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestContextHolder
 
 class SentryAppender extends AppenderSkeleton {
 
-    SentryClient sentryClient
+    RavenClient ravenClient
 
-    public SentryAppender(SentryClient client) {
+    public SentryAppender(RavenClient client) {
         super()
-        sentryClient = client
+        ravenClient = client
         setThreshold(Level.ERROR)
     }
 
     void append(LoggingEvent event) {
-        if (sentryClient.config.active == false) { return }
+        if (ravenClient.config.active == false) { return }
 
         def level = event.getLevel()
 
@@ -26,7 +25,7 @@ class SentryAppender extends AppenderSkeleton {
             def grailsRequest = (GrailsWebRequest) RequestContextHolder.requestAttributes
             def request = grailsRequest?.getRequest()
             def currentUser = request ? request['sentryUserData'] : null
-            sentryClient.logEvent(event, request, currentUser)
+            ravenClient.logEvent(event, request, currentUser)
         }
     }
 
@@ -34,9 +33,5 @@ class SentryAppender extends AppenderSkeleton {
 
     boolean requiresLayout() {
         return false
-    }
-
-    String getDSN() {
-        return ConfigurationHolder.config.grails.plugins.sentry.dsn
     }
 }

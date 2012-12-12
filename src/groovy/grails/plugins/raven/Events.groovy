@@ -1,13 +1,13 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import org.codehaus.groovy.grails.web.json.*
 import javax.servlet.http.HttpServletRequest
-import grails.plugins.sentry.interfaces.*
+import grails.plugins.raven.interfaces.*
 
 /*
  * http://sentry.readthedocs.org/en/latest/developer/interfaces/index.html
  */
-class SentryJSON {
+class Events {
 
     /*
      * Main JSON
@@ -26,7 +26,7 @@ class SentryJSON {
      *     "module": "__builtins__"
      * }
      */
-    public static String build(String eventId, String message, String checksum, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, SentryConfiguration config) {
+    public static String build(String eventId, String message, String checksum, Throwable exception, String loggerClass, String logLevel, HttpServletRequest request, User user, String timestamp, Configuration config) {
         JSONObject obj = new JSONObject([
             event_id: eventId,
             checksum: checksum,
@@ -39,12 +39,12 @@ class SentryJSON {
             server_name: config.serverName
         ])
         if (exception) {
-            obj.put("culprit", SentryJSON.determineCulprit(exception))
-            obj.put("sentry.interfaces.Exception", SentryJSON.buildException(exception))
-            obj.put("sentry.interfaces.Stacktrace", SentryJSON.buildStacktrace(exception))
+            obj.put("culprit", Events.determineCulprit(exception))
+            obj.put("sentry.interfaces.Exception", Events.buildException(exception))
+            obj.put("sentry.interfaces.Stacktrace", Events.buildStacktrace(exception))
         }
         if (request) {
-            obj.put("sentry.interfaces.Http", SentryJSON.buildHttp(request))
+            obj.put("sentry.interfaces.Http", Events.buildHttp(request))
         }
         if (user) {
             obj.put("sentry.interfaces.User", user.toJSON())
@@ -120,7 +120,7 @@ class SentryJSON {
     }
 
     public static JSONObject buildHttp(HttpServletRequest request) {
-        return new SentryHttp(request).toJSONObject()
+        return new Http(request).toJSONObject()
     }
 
     public static String determineCulprit(Throwable exception) {

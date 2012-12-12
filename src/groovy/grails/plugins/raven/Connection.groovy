@@ -1,15 +1,15 @@
-package grails.plugins.sentry
+package grails.plugins.raven
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import java.security.SignatureException
 import java.net.Proxy
 
-public class SentryConnection {
+public class Connection {
 
-    private SentryConfiguration config
+    private Configuration config
 
-    public SentryConnection(SentryConfiguration config) {
+    public Connection(Configuration config) {
         this.config = config
     }
 
@@ -33,6 +33,7 @@ public class SentryConnection {
      * }
      */
     public void send(String messageBody, long timestamp) throws IOException {
+        println "AQUI"
         String hmacSignature = getSignature("$timestamp $messageBody", config.secretKey)
 
         HttpURLConnection connection = getConnection()

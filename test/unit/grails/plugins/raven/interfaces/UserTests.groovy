@@ -1,5 +1,6 @@
-package grails.plugins.sentry.interfaces
+package grails.plugins.raven.interfaces
 
+import grails.plugins.raven.interfaces.User
 import grails.test.*
 import org.codehaus.groovy.grails.web.json.JSONObject
 

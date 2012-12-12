@@ -1,9 +1,7 @@
-package grails.plugins.sentry.test
-
-import grails.plugins.sentry.SentryClient
+import grails.plugins.raven.RavenClient
 
 class SentryFilters {
-    def sentryClient
+    def ravenClient
     // def springSecurityService
 
     def filters = {
@@ -12,7 +10,7 @@ class SentryFilters {
                 // def user = springSecurityService.currentUser
                 def user = [id: 123, is_authenticated: true, email: "user@email.com", username: "username"]
                 if (user) {
-                   sentryClient.setUserData(user)
+                   ravenClient.setUserData(user)
                 }
             }
         }

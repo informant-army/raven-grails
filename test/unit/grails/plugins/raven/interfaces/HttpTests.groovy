@@ -1,13 +1,14 @@
-package grails.plugins.sentry.interfaces
+package grails.plugins.raven.interfaces
 
 import grails.test.*
-import grails.plugins.sentry.TestUtils
+import grails.plugins.raven.interfaces.Http
+import grails.plugins.raven.TestUtils
 import org.codehaus.groovy.grails.web.json.JSONObject
 import java.io.ObjectInputStream
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.Cookie
 
-class SentryHttpTests extends GroovyTestCase {
+class HttpTests extends GroovyTestCase {
 
     Map requestMap
     HttpServletRequest request
@@ -34,18 +35,18 @@ class SentryHttpTests extends GroovyTestCase {
     }
 
     def void testBuildHeaders() {
-        SentryHttp http = new SentryHttp(request)
+        Http http = new Http(request)
         assertEquals requestMap.headers.size(), http.headers.size()
         assertEquals requestMap['accepts'], http.headers['accepts']
     }
 
     def void testFilterURL() {
-        SentryHttp http = new SentryHttp(request)
+        Http http = new Http(request)
         assertEquals requestMap.url.toString().split('.dispatch').first(), http.url
     }
 
     def void testData() {
-        SentryHttp http = new SentryHttp(request)
+        Http http = new Http(request)
         requestMap.parameterMap.each {
             assert http.data.containsKey(it.key)
             assert http.data.containsValue(it.value.first())
@@ -54,19 +55,19 @@ class SentryHttpTests extends GroovyTestCase {
     }
 
     def void testEnv() {
-        SentryHttp http = new SentryHttp(request)
+        Http http = new Http(request)
         assertEquals TestUtils.TESTREMOTEADDR, http.env['REMOTE_ADDR']
     }
 
     def void testCookies() {
-        SentryHttp http = new SentryHttp(request)
+        Http http = new Http(request)
         def testCookies = []
         TestUtils.TESTCOOKIES.each { testCookies << "${it.getName()}=${it.getValue()}" }
         assertEquals testCookies.join(','), http.cookies
     }
 
     def void testGetJSONObject() {
-        SentryHttp http = new SentryHttp(request)
+        Http http = new Http(request)
         JSONObject json = http.toJSONObject()
         assertNotNull json 
         assertEquals http.url, json.url
