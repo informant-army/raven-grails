@@ -23,10 +23,10 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
-    dependencies {
-        build("org.grails.plugins:tomcat:$grailsVersion",
-              "org.grails.plugins:release:2.2.0",
-              "org.grails.plugins:rest-client-builder:1.0.3") {
+    plugins {
+        build(":tomcat:$grailsVersion",
+              ":release:2.2.0",
+              ":rest-client-builder:1.0.3") {
             export = false
         }
     }
