@@ -23,10 +23,10 @@ class RavenGrailsPlugin {
     def author = "Alan Fachini"
     def authorEmail = "alfakini@gmail.com"
     def description = "Sentry Client for Grails"
-    def documentation = "http://grails.org/plugin/sentry"
+    def documentation = "http://grails.org/plugin/raven"
 
     def license = "APACHE"
-    def developers = [ [ name: "Alan Fachini", email: "alfakini@gmail.com" ] ]
+    // def developers = [ [ name: "Alan Fachini", email: "alfakini@gmail.com" ] ]
     def issueManagement = [ system: "GitHub", url: "https://github.com/informant-army/raven-grails/issues" ]
     def scm = [ url: "https://github.com/informant-army/raven-grails" ]
 
