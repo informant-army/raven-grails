@@ -11,7 +11,9 @@ Take a look on the [grails.org plugin page](http://grails.org/plugin/raven).
 Add the following to your `BuildConfig.groovy`:
 
 ```groovy
-compile ":grails-raven:0.5.1"
+plugins {
+    compile ":grails-raven:0.5.1"
+}
 ```
 
 Or use the command `grails install-plugin raven`
