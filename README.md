@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/informant-army/raven-grails.png?branch=master)](https://travis-ci.org/informant-army/raven-grails)
 
-Raven-Grails is a Grails client for integrating apps with [Sentry](http://www.getsentry.com) error reporting API.
+Raven-Grails is a Grails client for integrating apps with [Sentry](http://www.getsentry.com). [Sentry](http://www.getsentry.com) is an event logging platform primarily focused on capturing and aggregating exceptions.
 
 Take a look on the [grails.org plugin page](http://grails.org/plugin/raven).
 
