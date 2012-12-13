@@ -12,7 +12,7 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":grails-raven:0.5.1"
+    compile ":grails-raven:0.5.2"
 }
 ```
 
