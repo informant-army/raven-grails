@@ -20,20 +20,24 @@ class Configuration {
     Configuration(Map options = [:]) throws RavenException {
         options.each { k,v -> if (this.hasProperty(k)) { this."$k" = v} }
 
-        URL url = new URL(dsn)
-        this.protocol = url.protocol
-        this.host = url.host
+        if (dsn) {
+            URL url = new URL(dsn)
+            this.protocol = url.protocol
+            this.host = url.host
 
-        String userInfo = url.userInfo
-        String[] auth = userInfo.split(':')
-        this.secretKey = auth[1]
-        this.publicKey = auth[0]
+            String userInfo = url.userInfo
+            String[] auth = userInfo.split(':')
+            this.secretKey = auth[1]
+            this.publicKey = auth[0]
 
-        this.port = url.port
+            this.port = url.port
 
-        String[] path = url.path.split('/')
-        this.projectId = path[-1]
-        this.path = path[0..-2].join('/')
+            String[] path = url.path.split('/')
+            this.projectId = path[-1]
+            this.path = path[0..-2].join('/')
+        } else {
+            active = false
+        }
     }
 
     String getSentryURL() {
