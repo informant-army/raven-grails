@@ -12,11 +12,9 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":grails-raven:0.5.2"
+    compile ":raven:0.5.4"
 }
 ```
-
-Or use the command `grails install-plugin raven`
 
 ## Configuration
 
