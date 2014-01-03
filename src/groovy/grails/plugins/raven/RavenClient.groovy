@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequestWrapper
 import org.apache.commons.lang.time.DateFormatUtils
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
-import static org.apache.commons.codec.binary.Base64.encodeBase64String
 import org.springframework.web.context.request.RequestContextHolder
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import grails.plugins.raven.interfaces.User
@@ -81,7 +80,7 @@ class RavenClient {
     }
 
     private String buildMessageBody(String jsonMessage) {
-        return encodeBase64String(jsonMessage.getBytes())
+        return jsonMessage.bytes.encodeBase64().toString()
     }
 
     def setUserData(Map user) {

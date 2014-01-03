@@ -6,7 +6,7 @@ import grails.plugins.raven.RavenClient
 import grails.plugins.raven.Configuration
 
 class RavenGrailsPlugin {
-    def version = "0.5.3-SNAPSHOT"
+    def version = "0.5.4-SNAPSHOT"
     def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
