@@ -11,12 +11,12 @@ class RavenGrailsPlugin {
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
     def pluginExcludes = [
-            "grails-app/conf/SentryFilters.groovy",
-            "grails-app/views/**",
-            "grails-app/controllers/**",
-            "grails-app/services/test/**",
-            "test/**",
-            "web-app/**"
+        "grails-app/conf/SentryFilters.groovy",
+        "grails-app/views/**",
+        "grails-app/controllers/**",
+        "grails-app/services/test/**",
+        "test/**",
+        "web-app/**"
     ]
 
     def title = "Sentry Client Plugin"
@@ -26,7 +26,7 @@ class RavenGrailsPlugin {
     def documentation = "http://github.com/informant-army/raven-grails/blob/master/README.md"
 
     def license = "APACHE"
-    // def developers = [ [ name: "Alan Fachini", email: "alfakini@gmail.com" ] ]
+    def developers = [ [ name: "Benoit Hediard", email: "ben@benorama.com" ] ]
     def issueManagement = [ system: "GitHub", url: "https://github.com/informant-army/raven-grails/issues" ]
     def scm = [ url: "https://github.com/informant-army/raven-grails" ]
 
