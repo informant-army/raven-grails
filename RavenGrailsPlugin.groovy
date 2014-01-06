@@ -23,12 +23,12 @@ class RavenGrailsPlugin {
     def author = "Alan Fachini"
     def authorEmail = "alfakini@gmail.com"
     def description = "Sentry Client for Grails"
-    def documentation = "http://github.com/informant-army/raven-grails/blob/master/README.md"
+    def documentation = "http://github.com/agorapulse/grails-raven/blob/master/README.md"
 
     def license = "APACHE"
     def developers = [ [ name: "Benoit Hediard", email: "ben@benorama.com" ] ]
-    def issueManagement = [ system: "GitHub", url: "https://github.com/informant-army/raven-grails/issues" ]
-    def scm = [ url: "https://github.com/informant-army/raven-grails" ]
+    def issueManagement = [ system: "GitHub", url: "http://github.com/agorapulse/grails-raven/issues" ]
+    def scm = [ url: "http://github.com/agorapulse/grails-raven" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
