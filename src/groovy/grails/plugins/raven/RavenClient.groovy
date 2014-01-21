@@ -1,15 +1,12 @@
 package grails.plugins.raven
 
-import java.util.Date
-import java.util.UUID
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletRequestWrapper
+import grails.plugins.raven.interfaces.User
 import org.apache.commons.lang.time.DateFormatUtils
 import org.apache.log4j.Level
 import org.apache.log4j.spi.LoggingEvent
 import org.springframework.web.context.request.RequestContextHolder
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import grails.plugins.raven.interfaces.User
+
+import javax.servlet.http.HttpServletRequest
 
 class RavenClient {
 

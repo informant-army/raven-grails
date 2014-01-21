@@ -3,7 +3,7 @@ package grails.plugins.raven
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import java.security.SignatureException
-import java.net.Proxy
+import java.util.concurrent.Executors
 
 public class Connection {
 
