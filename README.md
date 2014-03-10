@@ -12,7 +12,7 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":raven:0.5.7"
+    compile ":raven:0.5.8"
 }
 ```
 
@@ -87,3 +87,12 @@ ravenClient.captureMessage(String message, String loggerClass, String logLevel)
 ravenClient.captureException(Throwable exception)
 ravenClient.captureException(Throwable exception, String loggerClass, String logLevel, HttpServletRequest request)
 ```
+
+# Latest releases
+
+* 2014-03-08 **V0.5.8** : typo fix in `segmentio:page tag.
+* 2014-03-05 **V0.5.7** : page tracking enabled by default in `segmentio:initJS` tag.
+
+# Bugs
+
+To report any bug, please use the project [Issues](http://github.com/agorapulse/grails-raven/issues) section on GitHub.
