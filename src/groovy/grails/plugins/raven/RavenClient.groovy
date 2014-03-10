@@ -31,7 +31,7 @@ class RavenClient {
     }
 
     def captureMessage(String message, String loggerName, String logLevel) {
-        send(exception.getMessage(), null, loggerName, logLevel, null, null)
+        send(message, null, loggerName, logLevel, null, null)
     }
 
     def captureException(Throwable exception) {
