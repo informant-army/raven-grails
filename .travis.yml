@@ -1,15 +1,4 @@
 language: groovy
-
 jdk:
-- openjdk6
-
-before_install:
-  - "rm -rf ~/.gvm"
-  - "curl -s get.gvmtool.net > ~/install_gvm.sh"
-  - "chmod 775 ~/install_gvm.sh"
-  - ~/install_gvm.sh
-  - "echo \"gvm_auto_answer=true\" > ~/.gvm/etc/config"
-  - "source ~/.gvm/bin/gvm-init.sh"
-  - "gvm install grails 2.3.4 || true"
-
-script: "grails clean && grails upgrade --non-interactive && grails test-app -unit --non-interactive --stacktrace"
+  - oraclejdk7
+script: ./grailsw refresh-dependencies && ./grailsw clean && ./grailsw "test-app unit:"
