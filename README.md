@@ -90,8 +90,13 @@ ravenClient.captureException(Throwable exception, String loggerClass, String log
 
 # Latest releases
 
-* 2014-03-08 **V0.5.8** : typo fix in `segmentio:page tag.
-* 2014-03-05 **V0.5.7** : page tracking enabled by default in `segmentio:initJS` tag.
+* 2014-03-08 **V0.5.8** : PR by jglapa for improved user data handling + bug fix
+* 2014-03-05 **V0.5.7** : PR by Logicopolis for async execution
+* 2014-01-03 **V0.5.4** : PR by benorama to remove commons codec Base64 dependency when building message body (for Grails 2.3 compatibility)
+* 2012-12-12 **V0.5** : refactoring
+* 2012-12-10 **V0.4** : sentryClient Spring Bean
+* 2012-11-23 **V0.2** : user interface + bug fixes
+* 2012-10-29 **V0.1** : initial release
 
 # Bugs
 
