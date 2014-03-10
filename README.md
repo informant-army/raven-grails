@@ -35,10 +35,11 @@ environments {
 }
 ```
 
-To set the current user data to be included in the logged messages sent to Sentry use the method `ravenClient.setUserData` passing a Map containing the user data. The supported keys are id, username, email and is\_authenticated. The only key that is mandatory is is\_authenticated. If you are using SpringSecurity in your application, you can get the current user using the method `springSecurityService.currentUser`. Above an example of Grails filter to set the user data:
+To set the current user data to be included in the logged messages sent to Sentry use the method `ravenClient.setUserData` passing a Map containing the user data. The only key that is mandatory is is\_authenticated. If you are using SpringSecurity in your application, you can get the current user using the method `springSecurityService.currentUser`. Below an example of Grails filter to set the user data:
 
 ```groovy
 import grails.plugins.raven.RavenClient
+import grails.util.Holders
 
 class SentryFilters {
     def ravenClient
@@ -49,7 +50,7 @@ class SentryFilters {
             before = {
                 if (springSecurityService.isLoggedIn()) {
                     def user = springSecurityService.currentUser
-                    def userData = [id: user.id, is_authenticated: true, email: user.email, username: user.username]
+                    def userData = [id: user.id, is_authenticated: true, email: user.email, username: user.username, appVersion: Holders.grailsApplication.metadata['app.version']]
                     ravenClient.setUserData(userData)
                 } else {
                     ravenClient.setUserData([is_authenticated:false])
