@@ -5,16 +5,13 @@ import org.apache.log4j.Logger
 
 class RavenGrailsPlugin {
 
-    def version = "5.0.1-SNAPSHOT"
+    def version = "5.0.1"
     def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
-    def loadAfter = ['controllers']
     def pluginExcludes = [
-        "grails-app/conf/SentryFilters.groovy",
         "grails-app/views/**",
         "grails-app/controllers/**",
-        "grails-app/services/test/**",
         "test/**",
         "web-app/**"
     ]
@@ -36,7 +33,6 @@ class RavenGrailsPlugin {
             pluginConfig = application.config.grails?.plugins?.raven // Legacy
         }
         if (pluginConfig?.dsn) {
-            application.classLoader.loadClass("net.kencochrane.raven.log4j.SentryAppender")
             log.info "Raven config found, creating Raven/Sentry client and corresponding Log4J appender"
             ravenFactory(DefaultRavenFactory)
             raven(ravenFactory: "createRavenInstance", new Dsn(pluginConfig.dsn)) { bean ->
