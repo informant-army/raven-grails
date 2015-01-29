@@ -37,25 +37,25 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                 logger: loggingEvent.loggerName,
                 message: loggingEvent.renderedMessage,
                 timestamp: new Date(loggingEvent.timeStamp)
-        ).addExtra(THREAD_NAME, loggingEvent.threadName)
+        ).withExtra(THREAD_NAME, loggingEvent.threadName)
 
         if (loggingEvent.throwableInformation) {
             Throwable throwable = loggingEvent.throwableInformation.throwable
-            eventBuilder.addSentryInterface(new ExceptionInterface(throwable))
+            eventBuilder.withSentryInterface(new ExceptionInterface(throwable))
             // Determine culprit
             Throwable rootCause = ExceptionUtils.getRootCause(throwable)
             StackTraceElement[] elements = rootCause ? rootCause.getStackTrace() : throwable.getStackTrace()
             if (elements) {
                 StackTraceElement trace = elements[0]
-                eventBuilder.setCulprit("${trace.className}.${trace.methodName}")
+                eventBuilder.withCulprit("${trace.className}.${trace.methodName}")
             }
         } else {
             // Set default culprit (do not use locationInformation since it returns SLF4JLog class)
-            eventBuilder.setCulprit(loggingEvent.loggerName)
+            eventBuilder.withCulprit(loggingEvent.loggerName)
         }
 
         if (loggingEvent.NDC) {
-            eventBuilder.addExtra(LOG4J_NDC, loggingEvent.NDC)
+            eventBuilder.withExtra(LOG4J_NDC, loggingEvent.NDC)
         }
 
         Map<String, Object> properties = (Map<String, Object>) loggingEvent.properties
@@ -63,12 +63,12 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             //if (extraTags.contains(mdcEntry.key)) {
             //    eventBuilder.addTag(mdcEntry.key, mdcEntry.value.toString())
             //} else {
-                eventBuilder.addExtra(mdcEntry.key, mdcEntry.value)
+                eventBuilder.withExtra(mdcEntry.key, mdcEntry.value)
             //}
         }
 
         for (Map.Entry<String, String> tagEntry : tags.entrySet()) {
-            eventBuilder.addTag(tagEntry.key, tagEntry.value)
+            eventBuilder.withTag(tagEntry.key, tagEntry.value)
         }
 
         raven.runBuilderHelpers(eventBuilder)
