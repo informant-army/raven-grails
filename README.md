@@ -12,7 +12,7 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":raven:5.0.1"
+    compile ":raven:6.0.0"
 }
 ```
 
@@ -59,10 +59,10 @@ import net.kencochrane.raven.event.EventBuilder
 Raven raven // To inject Spring bean raven client in your controllers or services
 
 // Send simple message
-raven.sendMessage("some message")
+raven?.sendMessage("some message")
 
 // Send exception
-raven.sendException(new Exception("some exception"))
+raven?.sendException(new Exception("some exception"))
 
 // Custom event
 EventBuilder eventBuilder = new EventBuilder(
@@ -74,14 +74,14 @@ EventBuilder eventBuilder = new EventBuilder(
                 new Exception("some exception")
         )
 )
-raven.sendEvent(eventBuilder.build())
+raven?.sendEvent(eventBuilder.build())
 ```
 
 # Latest releases
 
-* 2014-10-14 **V5.0.1** : major refactor to use the official [Raven-java](https://github.com/getsentry/raven-java) client
+* 2015-01-29 **V6.0.0** : major refactor to use the official [Raven-java](https://github.com/getsentry/raven-java) client
 
-**WARNING**: Breaking change, since V5.0.1, if you were using the legacy groovy-based `ravenClient` spring bean, you must replace it with the new java-based `raven` client spring bean and `sendMessage` or `sendException` methods.
+**WARNING**: Breaking change, since V6.0.0, if you were using the legacy groovy-based `ravenClient` spring bean, you must replace it with the new java-based `raven` client spring bean and `sendMessage` or `sendException` methods.
 
 * 2014-03-08 **V0.5.8** : PR by jglapa for improved user data handling + bug fix
 * 2014-03-05 **V0.5.7** : PR by Logicopolis for async execution
