@@ -1,18 +1,17 @@
-import grails.plugins.raven.Configuration
-import grails.plugins.raven.RavenClient
-import grails.plugins.raven.SentryAppender
+import grails.plugins.raven.GrailsLog4jSentryAppender
+import net.kencochrane.raven.DefaultRavenFactory
+import net.kencochrane.raven.dsn.Dsn
 import org.apache.log4j.Logger
 
 class RavenGrailsPlugin {
-    def version = "0.5.8"
+
+    def version = "6.0.0"
     def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
     def pluginExcludes = [
-        "grails-app/conf/SentryFilters.groovy",
         "grails-app/views/**",
         "grails-app/controllers/**",
-        "grails-app/services/test/**",
         "test/**",
         "web-app/**"
     ]
@@ -28,40 +27,29 @@ class RavenGrailsPlugin {
     def issueManagement = [ system: "GitHub", url: "http://github.com/agorapulse/grails-raven/issues" ]
     def scm = [ url: "http://github.com/agorapulse/grails-raven" ]
 
-    def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before
-    }
-
     def doWithSpring = {
-        ConfigObject config = new ConfigObject()
-        config['clientVersion'] = clientVersion
-        def configuration = new Configuration(config.merge(application.config.grails.plugins.raven.clone()))
-
-        ravenClient(RavenClient, configuration) { bean ->
-            bean.autowire = "byName"
+        def pluginConfig = application.config.grails?.plugin?.raven
+        if (!pluginConfig) {
+            pluginConfig = application.config.grails?.plugins?.raven // Legacy
         }
-
-        sentryAppender(SentryAppender, ref('ravenClient'))
-    }
-
-    def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
+        if (pluginConfig?.dsn) {
+            log.info "Raven config found, creating Raven/Sentry client and corresponding Log4J appender"
+            ravenFactory(DefaultRavenFactory)
+            raven(ravenFactory: "createRavenInstance", new Dsn(pluginConfig.dsn)) { bean ->
+                bean.autowire = 'byName'
+            }
+            sentryAppender(GrailsLog4jSentryAppender, ref('raven'), pluginConfig)
+        } else {
+            log.warn "Raven config not found, add 'grails.plugin.raven.dsn' to your config to enable Raven/Sentry client"
+        }
     }
 
     def doWithApplicationContext = { applicationContext ->
-        def appender = applicationContext.sentryAppender
-        appender.activateOptions()
-        Logger.rootLogger.addAppender(appender)
+        GrailsLog4jSentryAppender appender = applicationContext.sentryAppender
+        if (appender) {
+            appender.activateOptions()
+            Logger.rootLogger.addAppender(appender)
+        }
     }
 
-    def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-    }
-
-    def onConfigChange = { event ->
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
 }

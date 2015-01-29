@@ -27,11 +27,14 @@ grails.project.dependency.resolution = {
         build 'org.apache.httpcomponents:httpcore:4.3.2'
         build 'org.apache.httpcomponents:httpclient:4.3.2'
         build 'org.apache.httpcomponents:httpmime:4.3.3'
+        // Raven java
+        compile 'net.kencochrane.raven:raven-log4j:6.0.0'
     }
     plugins {
+        build ':tomcat:7.0.54'
         build(':release:3.0.1',
                 ':rest-client-builder:1.0.3',
-                ':coveralls:0.1') {
+                ':coveralls:0.1.3') {
             export = false
         }
         test(':code-coverage:2.0.3-3') {
