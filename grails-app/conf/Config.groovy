@@ -1,15 +1,14 @@
 // configuration for plugin testing - will not be included in the plugin zip
-grails.plugins.raven.dsn = "https://123:123@app.getsentry.com/123"
-grails.plugins.raven.dsn = "https://1f195b8762874849b7b48034a9f5c2cf:c075ecead5d748d2ae81f8402206ff96@app.getsentry.com/3615"
+grails.plugin.raven.dsn = "https://123:123@app.getsentry.com/123"
 grails.exceptionresolver.params.exclude = ['password', 'creditCard']
 grails.exceptionresolver.logRequestParameters = true
 
 environments {
     development {
-        grails.plugins.raven.active = true
+        grails.plugin.raven.active = true
     }
     production {
-        grails.plugins.raven.active = false
+        grails.plugin.raven.active = false
     }
 }
 
