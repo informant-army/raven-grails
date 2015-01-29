@@ -23,7 +23,7 @@ class TestController {
                     level: Event.Level.ERROR,
                     logger: TestController.class.name,
                     message: "Exception caught"
-            ).addSentryInterface(
+            ).withSentryInterface(
                     new ExceptionInterface(e)
             )
 
