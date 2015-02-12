@@ -12,7 +12,7 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":raven:6.0.0"
+    compile ":raven:6.1.0"
 }
 ```
 
@@ -82,6 +82,7 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2015-02-12 **V6.1.0** : new setting to configure the logger to which you want to append the sentry appender (thanks to [Anuj Kulkarni](https://github.com/anujku))
 * 2015-01-29 **V6.0.0** : major refactor to use the official [Raven-java](https://github.com/getsentry/raven-java) client
 
 **WARNING**: Breaking change, since V6.0.0, if you were using the legacy groovy-based `ravenClient` spring bean, you must replace it with the new java-based `raven` client spring bean and `sendMessage` or `sendException` methods.
