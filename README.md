@@ -36,7 +36,7 @@ environments {
 }
 // optional configurations
 grails.plugin.raven.logger = "LOGGER1,LOGGER2,LOGGER3"
-grails.plugins.raven.serverName = "dev.server.com"
+grails.plugin.raven.serverName = "dev.server.com"
 
 ```
 
