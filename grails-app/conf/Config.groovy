@@ -1,6 +1,6 @@
 // configuration for plugin testing - will not be included in the plugin zip
 grails.plugin.raven.dsn = "https://123:123@app.getsentry.com/123"
-grails.plugin.raven.logger = "root"
+grails.plugin.raven.logger = "org,com"
 grails.exceptionresolver.params.exclude = ['password', 'creditCard']
 grails.exceptionresolver.logRequestParameters = true
 
