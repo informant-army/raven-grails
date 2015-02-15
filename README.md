@@ -20,7 +20,7 @@ plugins {
 
 You need to provide your Sentry DSN in `Config.groovy` file. The plugin will sent notifications to Sentry by default, if you want to disable notifications for an specific environment set the active option as false.
 You can also configure the multiple logger to which you want to append the sentry appender.
-
+You can also set the server name, but it is recommended to don't set this configuration and let the plugin to resolve it.
 ```groovy
 grails.plugin.raven.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
 
@@ -34,8 +34,10 @@ environments {
     production {
     }
 }
-// optional
+// optional configurations
 grails.plugin.raven.logger = "LOGGER1,LOGGER2,LOGGER3"
+grails.plugins.raven.serverName = "dev.server.com"
+
 ```
 
 Check [Raven-java](https://github.com/getsentry/raven-java) documentation to configure connection, protocol and async options in your DSN.
