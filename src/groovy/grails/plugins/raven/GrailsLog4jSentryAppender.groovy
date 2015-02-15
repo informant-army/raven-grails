@@ -71,6 +71,10 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             eventBuilder.withTag(tagEntry.key, tagEntry.value)
         }
 
+        if(config.serverName) {
+            eventBuilder.withServerName(config.serverName)
+        }
+
         raven.runBuilderHelpers(eventBuilder)
         return eventBuilder.build()
     }
