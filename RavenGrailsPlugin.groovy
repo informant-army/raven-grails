@@ -45,7 +45,7 @@ class RavenGrailsPlugin {
     }
 
     def doWithApplicationContext = { applicationContext ->
-        def configLoggers = application.config.grails?.plugins?.raven?.loggers
+        def configLoggers = application.config.grails?.plugin?.raven?.loggers
 
         GrailsLog4jSentryAppender appender = applicationContext.sentryAppender
         if (appender) {
