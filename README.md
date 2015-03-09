@@ -38,6 +38,7 @@ environments {
 grails.plugin.raven.loggers = "LOGGER1,LOGGER2,LOGGER3"
 grails.plugin.raven.serverName = "dev.server.com"
 grails.plugin.raven.tags = "tag1:val1,tag2:val2,tag3:val3"
+grails.plugin.raven.levels = "WARN,FATAL"
 
 ```
 
