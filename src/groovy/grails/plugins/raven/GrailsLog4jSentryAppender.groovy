@@ -29,7 +29,7 @@ class GrailsLog4jSentryAppender extends SentryAppender {
 
         if(config.levels) {
             // getting the user defined logging levels and capitalizing them
-            def configLoggingLevels = config.levels.tokenize(',').collect { Level.toLevel(it.replaceAll('\\s','').toUpperCase()) }
+            def configLoggingLevels = config.levels.tokenize(',').collect { Level.toLevel(it.replaceAll('\\s','')) }
 
             if(configLoggingLevels && configLoggingLevels.contains(level)) {
                 super.append(loggingEvent)
