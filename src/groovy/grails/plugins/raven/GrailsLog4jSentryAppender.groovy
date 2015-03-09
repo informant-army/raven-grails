@@ -79,14 +79,11 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             def tags = config.tags.tokenize(',')
 
             tags.each { tag ->
-                def tagKeyVal = tag.split(':')
+                // removing all spaces and splitting by ':'
+                def tagKeyVal = tag.replaceAll('\\s','').split(':')
 
-                // removing all spaces
-                def tagKey = tagKeyVal[0].replaceAll('\\s','')
-                def tagVal = tagKeyVal[1].replaceAll('\\s','')
-
-                if(tagKey && tagVal)
-                    eventBuilder.withTag(tagKey, tagVal)
+                if(tagKeyVal[0] && tagKeyVal[1])
+                    eventBuilder.withTag(tagKeyVal[0], tagKeyVal[1])
             }
         }
 
