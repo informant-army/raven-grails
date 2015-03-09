@@ -12,6 +12,7 @@ import org.apache.log4j.spi.LoggingEvent
 class GrailsLog4jSentryAppender extends SentryAppender {
 
     def config
+    def defaultLoggingLevels = [Level.ERROR, Level.FATAL, Level.WARN]
 
     GrailsLog4jSentryAppender(Raven raven, config) {
         super(raven)
@@ -25,8 +26,16 @@ class GrailsLog4jSentryAppender extends SentryAppender {
         }
 
         def level = loggingEvent.getLevel()
-        if (level.equals(Level.ERROR) || level.equals(Level.FATAL) || level.equals(Level.WARN)) {
-            super.append(loggingEvent)
+
+        if(config.levels) {
+            // getting the user defined logging levels and capitalizing them
+            def configLoggingLevels = config.levels.tokenize(',').collect { it.replaceAll('\\s','').toUpperCase() }
+
+            if(configLoggingLevels && configLoggingLevels.contains(level)) {
+                super.append(loggingEvent)
+            }
+        } else if (defaultLoggingLevels.contains(level)) {
+                super.append(loggingEvent)
         }
     }
 
