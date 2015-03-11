@@ -5,7 +5,7 @@ import org.apache.log4j.Logger
 
 class RavenGrailsPlugin {
 
-    def version = "6.1.2"
+    def version = "6.1.3"
     def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]

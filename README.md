@@ -12,7 +12,7 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":raven:6.1.2"
+    compile ":raven:6.1.3"
 }
 ```
 
@@ -38,7 +38,7 @@ environments {
 grails.plugin.raven.loggers = "LOGGER1,LOGGER2,LOGGER3"
 grails.plugin.raven.serverName = "dev.server.com"
 grails.plugin.raven.tags = "tag1:val1,tag2:val2,tag3:val3"
-grails.plugin.raven.levels = "WARN,FATAL"
+grails.plugin.raven.levels = "WARN,FATAL" // Default to ERROR,WARN,FATAL
 
 ```
 
@@ -86,6 +86,7 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2015-03-11 **V6.1.3** : additional config options (thanks to [Anuj Kulkarni](https://github.com/anujku))
 * 2015-02-17 **V6.1.2** : new config options (thanks to [Anuj Kulkarni](https://github.com/anujku))
 * 2015-02-12 **V6.1.1** : bug fix
 * 2015-02-12 **V6.1.0** : new setting to configure the logger to which you want to append the sentry appender (thanks to [Anuj Kulkarni](https://github.com/anujku))
