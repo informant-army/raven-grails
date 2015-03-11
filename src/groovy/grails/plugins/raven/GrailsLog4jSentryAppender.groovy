@@ -12,6 +12,7 @@ import org.apache.log4j.spi.LoggingEvent
 class GrailsLog4jSentryAppender extends SentryAppender {
 
     def config
+    def defaultLoggingLevels = [Level.ERROR, Level.FATAL, Level.WARN]
 
     GrailsLog4jSentryAppender(Raven raven, config) {
         super(raven)
@@ -25,8 +26,16 @@ class GrailsLog4jSentryAppender extends SentryAppender {
         }
 
         def level = loggingEvent.getLevel()
-        if (level.equals(Level.ERROR) || level.equals(Level.FATAL) || level.equals(Level.WARN)) {
-            super.append(loggingEvent)
+
+        if(config.levels) {
+            // getting the user defined logging levels and capitalizing them
+            def configLoggingLevels = config.levels.tokenize(',').collect { Level.toLevel(it.replaceAll('\\s','')) }
+
+            if(configLoggingLevels && configLoggingLevels.contains(level)) {
+                super.append(loggingEvent)
+            }
+        } else if (defaultLoggingLevels.contains(level)) {
+                super.append(loggingEvent)
         }
     }
 
@@ -73,6 +82,18 @@ class GrailsLog4jSentryAppender extends SentryAppender {
 
         if(config.serverName) {
             eventBuilder.withServerName(config.serverName)
+        }
+
+        if(config.tags) {
+            def tags = config.tags.tokenize(',')
+
+            tags.each { tag ->
+                // removing all spaces and splitting by ':'
+                def tagKeyVal = tag.replaceAll('\\s','').split(':')
+
+                if(tagKeyVal[0] && tagKeyVal[1])
+                    eventBuilder.withTag(tagKeyVal[0], tagKeyVal[1])
+            }
         }
 
         raven.runBuilderHelpers(eventBuilder)
