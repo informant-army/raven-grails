@@ -51,8 +51,7 @@ class RavenGrailsPlugin {
         if (appender) {
             appender.activateOptions()
             if(configLoggers) {
-                def loggers = configLoggers.tokenize(',')
-                loggers.each { logger ->
+                configLoggers.each { logger ->
                     Logger.getLogger(logger).addAppender(appender)
                 }
             }
