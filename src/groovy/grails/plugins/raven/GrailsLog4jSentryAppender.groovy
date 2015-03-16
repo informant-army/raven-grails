@@ -91,7 +91,7 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                 // removing all spaces and splitting by ':'
                 if (tagKey && tagVal)
                     eventBuilder.withTag(tagKey.replaceAll('\\s', ''),
-                            tagVal.replaceAll('\\s', ''))
+                                         tagVal.replaceAll('\\s', ''))
             }
         }
 
