@@ -85,15 +85,38 @@ class GrailsLog4jSentryAppender extends SentryAppender {
         }
 
         if(config.tags) {
-            def tags = config.tags.tokenize(',')
+            def tags = config.tags
 
-            tags.each { tag ->
+            tags.each { tagKey, tagVal ->
                 // removing all spaces and splitting by ':'
-                def tagKeyVal = tag.replaceAll('\\s','').split(':')
-
-                if(tagKeyVal[0] && tagKeyVal[1])
-                    eventBuilder.withTag(tagKeyVal[0], tagKeyVal[1])
+                if (tagKey && tagVal)
+                    eventBuilder.withTag(tagKey.replaceAll('\\s', ''),
+                            tagVal.replaceAll('\\s', ''))
             }
+        }
+
+        if (config.subsystems) {
+            def loggingCategory = loggingEvent.logger?.name
+            def subsystems = config.subsystems
+
+            // Set default subsystem as MISC
+            def subsystemName = 'MISC'
+
+            if (loggingCategory) {
+                // if package name starts with org its a lib exception
+                if (loggingCategory.startsWith('org.')) {
+                    subsystemName = 'LIBRARY'
+                } else {
+                    subsystems.each { name, packageList ->
+                        packageList.each { packageName ->
+                            if (loggingCategory.contains(packageName)) {
+                                subsystemName = name
+                            }
+                        }
+                    }
+                }
+            }
+            eventBuilder.withTag('subsystem', subsystemName)
         }
 
         raven.runBuilderHelpers(eventBuilder)

@@ -37,9 +37,13 @@ environments {
 // optional configurations
 grails.plugin.raven.loggers = "LOGGER1,LOGGER2,LOGGER3"
 grails.plugin.raven.serverName = "dev.server.com"
-grails.plugin.raven.tags = "tag1:val1,tag2:val2,tag3:val3"
+grails.plugin.raven.tags = ["tag1" : "val1",
+                            "tag2" : "val2",
+                            "tag3" : "val3"]
 grails.plugin.raven.levels = "WARN,FATAL" // Default to ERROR,WARN,FATAL
-
+grails.plugin.raven.subsystems = ["MODULE1" : ["com.company.services.module1", "com.company.controllers.module1"],
+                                  "MODULE2" : ["com.company.services.module2", "com.company.controllers.module2"],
+                                  "MODULE3" : ["com.company.services.module3", "com.company.controllers.module3"]]
 ```
 
 Check [Raven-java](https://github.com/getsentry/raven-java) documentation to configure connection, protocol and async options in your DSN.
