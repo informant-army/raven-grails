@@ -99,11 +99,12 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             def loggingCategory = loggingEvent.logger?.name
             def subsystems = config.subsystems
 
-            // Set default subsystem as MISC
+            // Set default subsystem as MISC - Can be parameterized and set as a config param as well.
             def subsystemName = 'MISC'
 
             if (loggingCategory) {
-                // if package name starts with org its a lib exception
+                // if package name starts with org its a library exception
+                // setting library subsystem as LIBRARY - Can be parameterized and set as a config param as well.
                 if (loggingCategory.startsWith('org.')) {
                     subsystemName = 'LIBRARY'
                 } else {
