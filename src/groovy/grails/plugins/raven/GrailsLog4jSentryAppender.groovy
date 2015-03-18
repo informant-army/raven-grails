@@ -35,12 +35,14 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                 super.append(loggingEvent)
             }
         } else if (defaultLoggingLevels.contains(level)) {
-                super.append(loggingEvent)
+            super.append(loggingEvent)
         }
     }
 
     @Override
     protected Event buildEvent(LoggingEvent loggingEvent) {
+        def className = null
+
         EventBuilder eventBuilder = new EventBuilder(
                 level: formatLevel(loggingEvent.level),
                 logger: loggingEvent.loggerName,
@@ -56,7 +58,8 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             StackTraceElement[] elements = rootCause ? rootCause.getStackTrace() : throwable.getStackTrace()
             if (elements) {
                 StackTraceElement trace = elements[0]
-                eventBuilder.withCulprit("${trace.className}.${trace.methodName}")
+                className = trace.className
+                eventBuilder.withCulprit("${className}.${trace.methodName}")
             }
         } else {
             // Set default culprit (do not use locationInformation since it returns SLF4JLog class)
@@ -72,7 +75,7 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             //if (extraTags.contains(mdcEntry.key)) {
             //    eventBuilder.addTag(mdcEntry.key, mdcEntry.value.toString())
             //} else {
-                eventBuilder.withExtra(mdcEntry.key, mdcEntry.value)
+            eventBuilder.withExtra(mdcEntry.key, mdcEntry.value)
             //}
         }
 
@@ -84,6 +87,10 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             eventBuilder.withServerName(config.serverName)
         }
 
+        if(config.logClassName && className) {
+            eventBuilder.withTag('class', className)
+        }
+
         if(config.tags) {
             def tags = config.tags
 
@@ -91,7 +98,7 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                 // removing all spaces and splitting by ':'
                 if (tagKey && tagVal)
                     eventBuilder.withTag(tagKey.replaceAll('\\s', ''),
-                                         tagVal.replaceAll('\\s', ''))
+                            tagVal.replaceAll('\\s', ''))
             }
         }
 
@@ -118,6 +125,29 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                 }
             }
             eventBuilder.withTag('subsystem', subsystemName)
+        }
+
+        if (config.priorities) {
+            def priorities = config.priorities
+
+            // Set default priority as LOW
+            def priorityLevel = 'LOW'
+
+            if (className) {
+                // if package name starts with org it has MID level priority ???
+                if (className.startsWith('org.')) {
+                    priorityLevel = 'MID'
+                } else {
+                    priorities.each { priority, packages ->
+                        packages.each { packageName ->
+                            if (className.contains(packageName)) {
+                                priorityLevel = priority
+                            }
+                        }
+                    }
+                }
+            }
+            eventBuilder.withTag('priority', priorityLevel)
         }
 
         raven.runBuilderHelpers(eventBuilder)
