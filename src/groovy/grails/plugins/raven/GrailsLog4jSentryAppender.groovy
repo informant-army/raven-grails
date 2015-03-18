@@ -128,8 +128,9 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                         }
                     }
                 }
-                eventBuilder.withTag('subsystem', subsystemName)
             }
+
+            eventBuilder.withTag('subsystem', subsystemName)
         }
 
         if (config.priorities) {
@@ -158,6 +159,7 @@ class GrailsLog4jSentryAppender extends SentryAppender {
                     }
                 }
             }
+
             eventBuilder.withTag('priority', priorityLevel)
         }
 
