@@ -109,22 +109,27 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             // Set default subsystem as MISC - Can be parameterized and set as a config param as well.
             def subsystemName = 'MISC'
 
-            if (loggingCategory) {
-                // if package name starts with org its a library exception
-                // setting library subsystem as LIBRARY - Can be parameterized and set as a config param as well.
-                if (loggingCategory.startsWith('org.')) {
-                    subsystemName = 'LIBRARY'
-                } else {
-                    subsystems.each { name, packageList ->
-                        packageList.each { packageName ->
-                            if (loggingCategory.contains(packageName)) {
-                                subsystemName = name
+            // Check if MDC entries has subsystem value which is overriden for a particular exception
+            if(properties.containsKey('subsystem')) {
+                subsystemName = properties.get('subsystem')
+            } else {
+                if (loggingCategory) {
+                    // if package name starts with org its a library exception
+                    // setting library subsystem as LIBRARY - Can be parameterized and set as a config param as well.
+                    if (loggingCategory.startsWith('org.')) {
+                        subsystemName = 'LIBRARY'
+                    } else {
+                        subsystems.each { name, packageList ->
+                            packageList.each { packageName ->
+                                if (loggingCategory.contains(packageName)) {
+                                    subsystemName = name
+                                }
                             }
                         }
                     }
                 }
+                eventBuilder.withTag('subsystem', subsystemName)
             }
-            eventBuilder.withTag('subsystem', subsystemName)
         }
 
         if (config.priorities) {
@@ -133,15 +138,21 @@ class GrailsLog4jSentryAppender extends SentryAppender {
             // Set default priority as LOW
             def priorityLevel = 'LOW'
 
-            if (className) {
-                // if package name starts with org it has MID level priority ???
-                if (className.startsWith('org.')) {
-                    priorityLevel = 'MID'
-                } else {
-                    priorities.each { priority, packages ->
-                        packages.each { packageName ->
-                            if (className.contains(packageName)) {
-                                priorityLevel = priority
+            // Check if MDC entries has priority value which is overriden for a particular exception
+            if(properties.containsKey('priority')) {
+                priorityLevel = properties.get('priority')
+            }
+            else {
+                if (className) {
+                    // if package name starts with org it has MID level priority ???
+                    if (className.startsWith('org.')) {
+                        priorityLevel = 'MID'
+                    } else {
+                        priorities.each { priority, packages ->
+                            packages.each { packageName ->
+                                if (className.contains(packageName)) {
+                                    priorityLevel = priority
+                                }
                             }
                         }
                     }
