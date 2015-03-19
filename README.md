@@ -56,7 +56,7 @@ grails.plugin.raven.priorities = ["HIGH" :  ["java.lang", "com.microsoft.sqlserv
                                   "LOW"  :  ["java.io"]]
 ```
 
-Check [Raven-java](https://github.com/getsentry/raven-java) documentation to configure connection, protocol and async options in your DSN.
+Check [Raven-java](https://github.com/getsentry/raven-java) documentation to configure connection, protocol and async options in your DSN. If you are sending extra tags from the plugin for the exceptions, make sure to enable the corresponding tag on sentry tag settings for the particular project to see the tag as a filter on the exception stream on sentry.
 
 
 ## Usage
