@@ -5,7 +5,7 @@ import org.apache.log4j.Logger
 
 class RavenGrailsPlugin {
 
-    def version = "6.1.3"
+    def version = "6.0.0.4"
     def clientVersion = "Raven-grails $version"
     def grailsVersion = "1.3.9 > *"
     def dependsOn = [:]
@@ -23,7 +23,7 @@ class RavenGrailsPlugin {
     def documentation = "http://github.com/agorapulse/grails-raven/blob/master/README.md"
 
     def license = "APACHE"
-    def developers = [ [ name: "Benoit Hediard", email: "ben@benorama.com" ] ]
+    def developers = [ [ name: "Benoit Hediard", email: "ben@benorama.com" ], [ name: "Anuj Kulkarni", email: "anuj@ccs.neu.edu" ] ]
     def issueManagement = [ system: "GitHub", url: "http://github.com/agorapulse/grails-raven/issues" ]
     def scm = [ url: "http://github.com/agorapulse/grails-raven" ]
 

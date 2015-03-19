@@ -12,7 +12,7 @@ Add the following to your `BuildConfig.groovy`:
 
 ```groovy
 plugins {
-    compile ":raven:6.1.3"
+    compile ":raven:6.0.0.4"
 }
 ```
 
@@ -100,6 +100,7 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2015-03-19 **V6.0.0.4** : additional config options (thanks to [Anuj Kulkarni](https://github.com/anujku)) and versioning aligned to java lib
 * 2015-03-11 **V6.1.3** : additional config options (thanks to [Anuj Kulkarni](https://github.com/anujku))
 * 2015-02-17 **V6.1.2** : new config options (thanks to [Anuj Kulkarni](https://github.com/anujku))
 * 2015-02-12 **V6.1.1** : bug fix
