@@ -50,9 +50,8 @@ class RavenGrailsPlugin {
         GrailsLog4jSentryAppender appender = applicationContext.sentryAppender
         if (appender) {
             appender.activateOptions()
-            if(configLoggers) {
-                def loggers = configLoggers.tokenize(',')
-                loggers.each { logger ->
+            if (configLoggers) {
+                configLoggers.each { logger ->
                     Logger.getLogger(logger).addAppender(appender)
                 }
             }
