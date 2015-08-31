@@ -50,7 +50,6 @@ environments:
             plugin:
                 raven:
                     active: false
-}
 ```
 
 You can also configure the multiple logger to which you want to append the sentry appender.
@@ -86,7 +85,8 @@ Check [Raven-java](https://github.com/getsentry/raven-java) documentation to con
 
 ## Logback Appender
 
-The Logback Appender is automatically configured by plugin, you have just to set enabled environments as shown in Configuration section.
+The Logback Appender is automatically configured by the plugin, you just have to set enabled environments as shown in Configuration section.
+
 All application exceptions will be logged on sentry by the appender.
 The appender is configured to log just the `ERROR`, `WARN` and `FATAL` levels.
 To log manually just use the `log.error()` method.
