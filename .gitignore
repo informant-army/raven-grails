@@ -1,19 +1,23 @@
+# GRAILS files
+/web-app/WEB-INF
+/target
+/target-eclipse
+
+# GRADLE files
+build/
+.gradle/
+
+# IDE files
 .classpath
-.settings
+.idea/
 .project
-.idea
+.settings
+/*.launch
+/*.tmproj
+
 *.log
 *.zip
 *.iml
-*.iws
-*Db.properties
-*Db.script
-out
-eclipse
-target
-target-eclipse
+/out
 plugin.xml
-stacktrace.log
-/plugins
-/web-app/plugins
-/web-app/WEB-INF/classes
+*.sha1

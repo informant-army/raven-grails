@@ -11,7 +11,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
-    static defaultLoggingLevels = [Level.ERROR, Level.WARN]
+    static defaultLoggingLevels = [Level.ERROR, Level.FATAL, Level.WARN]
 
     def config
 
