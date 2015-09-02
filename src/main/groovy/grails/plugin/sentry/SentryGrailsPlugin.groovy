@@ -1,14 +1,13 @@
-package raven
+package grails.plugin.sentry
 
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import grails.plugins.*
 import org.slf4j.LoggerFactory
-import raven.GrailsLogbackSentryAppender
 import net.kencochrane.raven.DefaultRavenFactory
 import net.kencochrane.raven.dsn.Dsn
 
-class RavenGrailsPlugin extends Plugin {
+class SentryGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.0.1 > *"
@@ -17,7 +16,7 @@ class RavenGrailsPlugin extends Plugin {
         "grails-app/views/error.gsp"
     ]
 
-    def title = "Sentry Client Plugin"
+    def title = "Sentry Plugin"
     def author = "Benoit Hediard"
     def authorEmail = "ben@benorama.com"
     def description = "Sentry Client for Grails"
@@ -31,25 +30,22 @@ class RavenGrailsPlugin extends Plugin {
 
     Closure doWithSpring() {
         {->
-            def pluginConfig = grailsApplication.config.grails?.plugin?.raven
-            if (!pluginConfig) {
-                pluginConfig = grailsApplication.config.grails?.plugins?.raven // Legacy
-            }
+            def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
             if (pluginConfig?.dsn) {
-                log.info "Raven config found, creating Raven/Sentry client and corresponding Logback appender"
+                log.info "Sentry config found, creating Sentry client and corresponding Logback appender"
                 ravenFactory(DefaultRavenFactory)
                 raven(ravenFactory: "createRavenInstance", new Dsn(pluginConfig.dsn)) { bean ->
                     bean.autowire = 'byName'
                 }
                 sentryAppender(GrailsLogbackSentryAppender, ref('raven'), pluginConfig)
             } else {
-                log.warn "Raven config not found, add 'grails.plugin.raven.dsn' to your config to enable Raven/Sentry client"
+                log.warn "Raven config not found, add 'grails.plugin.sentry.dsn' to your config to enable Sentry client"
             }
         }
     }
 
     void doWithApplicationContext() {
-        def configLoggers = grailsApplication.config.grails?.plugin?.raven?.loggers
+        def configLoggers = grailsApplication.config.grails?.plugin?.sentry?.loggers
 
         GrailsLogbackSentryAppender appender = applicationContext.sentryAppender
         if (appender) {

@@ -1,4 +1,4 @@
-package raven
+package grails.plugin.sentry
 
 import net.kencochrane.raven.Raven
 import net.kencochrane.raven.event.Event
@@ -11,7 +11,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
-    static defaultLoggingLevels = [Level.ERROR, Level.FATAL, Level.WARN]
+    static defaultLoggingLevels = [Level.ERROR, Level.WARN]
 
     def config
 

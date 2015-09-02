@@ -4,7 +4,7 @@
 
 <g:if test="${!grailsApplication.config.grails?.plugin?.raven?.dsn}">
     <h2 style="color: red">
-        Please add 'grails.plugin.raven.dsn' in your config.
+        Please add 'grails.plugin.sentry.dsn' in your config.
     </h2>
 </g:if>
 

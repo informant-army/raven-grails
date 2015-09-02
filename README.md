@@ -1,11 +1,11 @@
-Raven Grails Plugin
-===================
+Sentry Grails Plugin
+====================
 
 [![Build Status](https://secure.travis-ci.org/agorapulse/grails-raven.png?branch=master)](https://travis-ci.org/agorapulse/grails-raven)
 
 # Introduction
 
-Raven is a Grails client for integrating apps with [Sentry](http://www.getsentry.com). 
+Sentry plugin provides a Grails client for integrating apps with [Sentry](http://www.getsentry.com). 
 [Sentry](http://www.getsentry.com) is an event logging platform primarily focused on capturing and aggregating exceptions.
 
 It uses the official [Raven-java](https://github.com/getsentry/raven-java) client under the cover.
@@ -21,7 +21,7 @@ repositories {
 }
 dependencies {
     ...
-    compile "org.grails.plugins:raven:6.0.0"
+    compile "org.grails.plugins:sentry:6.0.0"
 }
 ```
 
@@ -32,7 +32,7 @@ Add your Sentry DSN to your _grails-app/conf/application.yml_.
 ```yml
 grails:
     plugin:
-        raven:
+        sentry:
             dsn: https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}
 ```
 
@@ -43,12 +43,12 @@ environments:
     development:
         grails:
             plugin:
-                raven:
+                sentry:
                     active: false
     test:
         grails:
             plugin:
-                raven:
+                sentry:
                     active: false
 ```
 
@@ -62,10 +62,10 @@ You can also set the server name, but it is recommended to don't set this config
 # Not tested on Grails 3 plugin...
 grails:
     plugin:
-        raven:
+        sentry:
             loggers: [LOGGER1, LOGGER2, LOGGER3]
             serverName: dev.server.com
-            levels: [ERROR, FATAL]
+            levels: [ERROR]
             tags: {tag1: val1,  tag2: val2, tag3: val3}
             subsystems: 
                 MODULE1: [com.company.services.module1, com.company.controllers.module1]
@@ -88,7 +88,7 @@ Check [Raven-java](https://github.com/getsentry/raven-java) documentation to con
 The Logback Appender is automatically configured by the plugin, you just have to set enabled environments as shown in Configuration section.
 
 All application exceptions will be logged on sentry by the appender.
-The appender is configured to log just the `ERROR`, `WARN` and `FATAL` levels.
+The appender is configured to log just the `ERROR` and `WARN` levels.
 To log manually just use the `log.error()` method.
 
 ## ravenClient

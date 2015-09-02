@@ -77,9 +77,9 @@ bintray {
     pkg {
         userOrg = 'agorapulse'
         name = "$project.group:$project.name"
-        desc = "Grails Raven plugin: a Sentry client for Grails"
-        issueTrackerUrl = "https://github.com/agorapulse/grails-${project.name}/issues"
-        vcsUrl = "https://github.com/agorapulse/grails-${project.name}"
+        desc = "Grails Sentry plugin"
+        issueTrackerUrl = "https://github.com/agorapulse/grails-raven/issues"
+        vcsUrl = "https://github.com/agorapulse/grails-raven"
         version {
             attributes = ['grails-plugin': "$project.group:$project.name"]
             name = project.version
