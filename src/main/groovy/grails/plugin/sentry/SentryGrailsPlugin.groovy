@@ -2,10 +2,12 @@ package grails.plugin.sentry
 
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.helpers.MDCInsertingServletFilter
 import com.getsentry.raven.DefaultRavenFactory
 import com.getsentry.raven.dsn.Dsn
 import grails.plugins.Plugin
 import org.slf4j.LoggerFactory
+import org.springframework.boot.context.embedded.FilterRegistrationBean
 
 class SentryGrailsPlugin extends Plugin {
 
@@ -34,6 +36,14 @@ class SentryGrailsPlugin extends Plugin {
                     bean.autowire = 'byName'
                 }
                 sentryAppender(GrailsLogbackSentryAppender, ref('raven'), pluginConfig)
+
+                if (pluginConfig?.disableMDCInsertingServletFilter != true) {
+                    log.info 'Activating MDCInsertingServletFilter'
+                    mdcInsertingServletFilter(FilterRegistrationBean) {
+                        filter = bean(MDCInsertingServletFilter)
+                        urlPatterns = ['/*']
+                    }
+                }
             } else {
                 log.warn "Raven config not found, add 'grails.plugin.sentry.dsn' to your config to enable Sentry client"
             }
