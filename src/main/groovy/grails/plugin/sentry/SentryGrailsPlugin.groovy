@@ -2,9 +2,9 @@ package grails.plugin.sentry
 
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
+import com.getsentry.raven.DefaultRavenFactory
+import com.getsentry.raven.dsn.Dsn
 import grails.plugins.Plugin
-import net.kencochrane.raven.DefaultRavenFactory
-import net.kencochrane.raven.dsn.Dsn
 import org.slf4j.LoggerFactory
 
 class SentryGrailsPlugin extends Plugin {

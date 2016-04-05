@@ -2,12 +2,12 @@ package grails.plugin.sentry
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
-import net.kencochrane.raven.Raven
-import net.kencochrane.raven.event.Event
-import net.kencochrane.raven.event.EventBuilder
-import net.kencochrane.raven.event.interfaces.ExceptionInterface
-import net.kencochrane.raven.event.interfaces.MessageInterface
-import net.kencochrane.raven.logback.SentryAppender
+import com.getsentry.raven.Raven
+import com.getsentry.raven.event.Event
+import com.getsentry.raven.event.EventBuilder
+import com.getsentry.raven.event.interfaces.ExceptionInterface
+import com.getsentry.raven.event.interfaces.MessageInterface
+import com.getsentry.raven.logback.SentryAppender
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
