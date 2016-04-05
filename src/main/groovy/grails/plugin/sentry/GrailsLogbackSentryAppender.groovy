@@ -1,13 +1,13 @@
 package grails.plugin.sentry
 
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.spi.ILoggingEvent
 import net.kencochrane.raven.Raven
 import net.kencochrane.raven.event.Event
 import net.kencochrane.raven.event.EventBuilder
 import net.kencochrane.raven.event.interfaces.ExceptionInterface
 import net.kencochrane.raven.event.interfaces.MessageInterface
 import net.kencochrane.raven.logback.SentryAppender
-import ch.qos.logback.classic.Level
-import ch.qos.logback.classic.spi.ILoggingEvent
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
@@ -29,7 +29,7 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         def level = event.level
         if (config.levels) {
             // Getting the user defined logging levels and capitalizing them
-            def configLoggingLevels = config.levels.collect { Level.toLevel(it.replaceAll('\\s','')) }
+            def configLoggingLevels = config.levels.collect { Level.toLevel(it.replaceAll('\\s', '')) }
             if (configLoggingLevels && configLoggingLevels.contains(level)) {
                 super.append(event)
             }

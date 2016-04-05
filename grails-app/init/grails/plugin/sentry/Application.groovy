@@ -1,4 +1,4 @@
-package sentry
+package grails.plugin.sentry
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
