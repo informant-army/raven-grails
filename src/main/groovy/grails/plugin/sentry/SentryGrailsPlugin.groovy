@@ -2,42 +2,48 @@ package grails.plugin.sentry
 
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
-import grails.plugins.*
+import ch.qos.logback.classic.helpers.MDCInsertingServletFilter
+import com.getsentry.raven.DefaultRavenFactory
+import com.getsentry.raven.dsn.Dsn
+import grails.plugins.Plugin
 import org.slf4j.LoggerFactory
-import net.kencochrane.raven.DefaultRavenFactory
-import net.kencochrane.raven.dsn.Dsn
+import org.springframework.boot.context.embedded.FilterRegistrationBean
 
 class SentryGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "3.0.1 > *"
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
+    def grailsVersion = '3.0.1 > *'
 
-    def title = "Sentry Plugin"
-    def author = "Benoit Hediard"
-    def authorEmail = "ben@benorama.com"
-    def description = "Sentry Client for Grails"
+    def title = 'Sentry Plugin'
+    def author = 'Benoit Hediard'
+    def authorEmail = 'ben@benorama.com'
+    def description = 'Sentry Client for Grails'
     def profiles = ['web']
-    def documentation = "http://github.com/agorapulse/grails-raven/blob/master/README.md"
+    def documentation = 'http://github.com/agorapulse/grails-raven/blob/master/README.md'
 
-    def license = "APACHE"
-    def developers = [ [ name: "Benoit Hediard", email: "ben@benorama.com" ] ]
-    def issueManagement = [ system: "GitHub", url: "http://github.com/agorapulse/grails-raven/issues" ]
-    def scm = [ url: "http://github.com/agorapulse/grails-raven" ]
+    def license = 'APACHE'
+    def developers = [[name: 'Benoit Hediard', email: 'ben@benorama.com']]
+    def issueManagement = [system: 'GitHub', url: 'http://github.com/agorapulse/grails-raven/issues']
+    def scm = [url: 'http://github.com/agorapulse/grails-raven']
 
     Closure doWithSpring() {
-        {->
+        { ->
             def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
             if (pluginConfig?.dsn) {
-                log.info "Sentry config found, creating Sentry client and corresponding Logback appender"
+                log.info 'Sentry config found, creating Sentry client and corresponding Logback appender'
                 ravenFactory(DefaultRavenFactory)
-                raven(ravenFactory: "createRavenInstance", new Dsn(pluginConfig.dsn)) { bean ->
+                raven(ravenFactory: 'createRavenInstance', new Dsn(pluginConfig.dsn)) { bean ->
                     bean.autowire = 'byName'
                 }
                 sentryAppender(GrailsLogbackSentryAppender, ref('raven'), pluginConfig)
+
+                if (pluginConfig?.disableMDCInsertingServletFilter != true) {
+                    log.info 'Activating MDCInsertingServletFilter'
+                    mdcInsertingServletFilter(FilterRegistrationBean) {
+                        filter = bean(MDCInsertingServletFilter)
+                        urlPatterns = ['/*']
+                    }
+                }
             } else {
                 log.warn "Raven config not found, add 'grails.plugin.sentry.dsn' to your config to enable Sentry client"
             }
@@ -61,5 +67,5 @@ class SentryGrailsPlugin extends Plugin {
             appender.start()
         }
     }
-    
+
 }
