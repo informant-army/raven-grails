@@ -21,7 +21,7 @@ repositories {
 }
 dependencies {
     ...
-    compile "org.grails.plugins:sentry:6.0.0"
+    compile "org.grails.plugins:sentry:7.1.0"
 }
 ```
 
@@ -96,9 +96,9 @@ To log manually just use the `log.error()` method.
 You also can use `raven` client to sent info messages to Sentry:
 
 ```groovy
-import net.kencochrane.raven.Raven
-import net.kencochrane.raven.event.Event
-import net.kencochrane.raven.event.EventBuilder
+import com.getsentry.raven.Raven
+import com.getsentry.raven.event.Event
+import com.getsentry.raven.event.EventBuilder
 
 Raven raven // To inject Spring bean raven client in your controllers or services
 
@@ -123,6 +123,7 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2016-04-06 **V7.1.0** : upgrade Sentry java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`).
 * 2015-08-31 **V6.0.0** : initial release for Grails 3.x.
 
 # Bugs
