@@ -15,7 +15,7 @@ plugins {
     id 'com.jfrog.artifactory' version '4.0.0'
 }
 
-version '7.1.0'
+version '7.1.0.1'
 group 'org.grails.plugins'
 
 apply plugin: 'eclipse'
@@ -79,7 +79,7 @@ grailsPublish {
     desc = 'Grails Sentry plugin'
     developers = [benorama: 'Benoit Hediard']
     portalUser = ''
-    portalPassword = ""
+    portalPassword = ''
 }
 bintray {
     pkg {
