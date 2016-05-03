@@ -22,7 +22,9 @@ repositories {
 }
 dependencies {
     ...
-    compile "org.grails.plugins:sentry:7.2.1"
+    compile("org.grails.plugins:sentry:7.2.1") {
+        exclude module: 'logback-core' // To avoid a dependency clash (org.springframework.boot:spring-boot-starter-logging use 1.1.5 instead of 1.1.7)
+    }
 }
 ```
 
