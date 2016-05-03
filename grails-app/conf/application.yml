@@ -1,6 +1,6 @@
 ---
 grails:
-    profile: plugin
+    profile: web-plugin
     codegen:
         defaultPackage: grails.plugin.sentry
     spring:

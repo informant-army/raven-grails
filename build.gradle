@@ -38,14 +38,18 @@ dependencyManagement {
 }
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.grails:grails-core"
-    console "org.grails:grails-console"
-    profile "org.grails.profiles:plugin:3.1.6"
-    provided "org.grails:grails-plugin-services"
-    provided "org.grails:grails-plugin-domain-class"
-    testCompile "org.grails:grails-plugin-testing"
+    compile 'org.springframework.boot:spring-boot-starter-logging'
+    compile 'org.springframework.boot:spring-boot-autoconfigure'
+    compile 'org.grails:grails-core'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'org.grails:grails-dependencies'
+    compile 'org.grails:grails-web-boot'
+    console 'org.grails:grails-console'
+    profile "org.grails.profiles:web-plugin:$grailsVersion"
+    provided 'org.grails:grails-plugin-services'
+    provided 'org.grails:grails-plugin-domain-class'
+    testCompile 'org.grails:grails-plugin-testing'
 
     // Raven java
     compile 'com.getsentry.raven:raven-logback:7.2.1'
