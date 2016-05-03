@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version '7.1.0.1'
+version '7.2.1'
 group 'org.grails.plugins'
 
 apply plugin: 'eclipse'
@@ -48,7 +48,7 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
 
     // Raven java
-    compile 'com.getsentry.raven:raven-logback:7.1.0'
+    compile 'com.getsentry.raven:raven-logback:7.2.1'
 }
 
 task wrapper(type: Wrapper) {
@@ -66,11 +66,6 @@ grailsPublish {
     developers = [benorama: 'Benoit Hediard']
     portalUser = ''
     portalPassword = ''
-}
-bintray {
-    pkg {
-        name = "org.grails.plugins:$project.name"
-    }
 }
 
 if (System.getenv('ARTIFACTORY_CONTEXT_URL')) {

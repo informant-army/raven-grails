@@ -21,7 +21,7 @@ repositories {
 }
 dependencies {
     ...
-    compile "org.grails.plugins:sentry:7.1.0.1"
+    compile "org.grails.plugins:sentry:7.2.1"
 }
 ```
 
@@ -123,9 +123,10 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
-* 2016-04-12 **V7.1.0.1** : minor update.
-* 2016-04-06 **V7.1.0** : upgrade Sentry java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`).
-* 2015-08-31 **V6.0.0** : initial release for Grails 3.x.
+* 2016-05-03 **V7.2.1** : upgrade Sentry java lib to 7.2.1
+* 2016-04-12 **V7.1.0.1** : minor update
+* 2016-04-06 **V7.1.0** : upgrade Sentry java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`)
+* 2015-08-31 **V6.0.0** : initial release for Grails 3.x
 
 # Bugs
 
