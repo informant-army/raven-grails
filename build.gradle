@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version '7.2.1'
+version '7.3.0-SNAPSHOT'
 group 'org.grails.plugins'
 
 apply plugin: 'eclipse'
@@ -52,7 +52,7 @@ dependencies {
     testCompile 'org.grails:grails-plugin-testing'
 
     // Raven java
-    compile 'com.getsentry.raven:raven-logback:7.2.1'
+    compile 'com.getsentry.raven:raven-logback:7.3.0'
 }
 
 task wrapper(type: Wrapper) {
