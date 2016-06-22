@@ -7,6 +7,7 @@ import com.getsentry.raven.event.Event
 import com.getsentry.raven.event.EventBuilder
 import com.getsentry.raven.event.interfaces.ExceptionInterface
 import com.getsentry.raven.event.interfaces.MessageInterface
+import com.getsentry.raven.event.interfaces.StackTraceInterface
 import com.getsentry.raven.logback.SentryAppender
 
 class GrailsLogbackSentryAppender extends SentryAppender {
@@ -40,12 +41,12 @@ class GrailsLogbackSentryAppender extends SentryAppender {
 
     @Override
     protected Event buildEvent(ILoggingEvent event) {
-        EventBuilder eventBuilder = new EventBuilder(
-                level: formatLevel(event.level),
-                logger: event.loggerName,
-                message: event.message,
-                timestamp: new Date(event.timeStamp)
-        ).withExtra(THREAD_NAME, event.threadName)
+        EventBuilder eventBuilder = new EventBuilder()
+                .withTimestamp(new Date(event.getTimeStamp()))
+                .withMessage(event.getFormattedMessage())
+                .withLogger(event.getLoggerName())
+                .withLevel(formatLevel(event.getLevel()))
+                .withExtra(THREAD_NAME, event.getThreadName())
 
         if (event.argumentArray) {
             eventBuilder.withSentryInterface(
@@ -53,12 +54,16 @@ class GrailsLogbackSentryAppender extends SentryAppender {
             )
         }
 
-        if (event.throwableProxy) {
-            eventBuilder.withSentryInterface(
-                    new ExceptionInterface(extractExceptionQueue(event))
-            )
+        if (event.getThrowableProxy() != null) {
+            eventBuilder.withSentryInterface(new ExceptionInterface(extractExceptionQueue(event)))
+        } else if (event.getCallerData().length > 0) {
+            eventBuilder.withSentryInterface(new StackTraceInterface(event.getCallerData()))
+        }
+
+        if (event.getCallerData().length > 0) {
+            eventBuilder.withCulprit(event.getCallerData()[0])
         } else {
-            eventBuilder.withCulprit(event.loggerName)
+            eventBuilder.withCulprit(event.getLoggerName())
         }
 
         for (Map.Entry<String, String> contextEntry : event.loggerContextVO.propertyMap.entrySet()) {
