@@ -5,6 +5,7 @@ import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.helpers.MDCInsertingServletFilter
 import com.getsentry.raven.DefaultRavenFactory
 import com.getsentry.raven.dsn.Dsn
+import com.getsentry.raven.servlet.RavenServletRequestListener
 import grails.plugins.Plugin
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.embedded.FilterRegistrationBean
@@ -36,6 +37,10 @@ class SentryGrailsPlugin extends Plugin {
                     bean.autowire = 'byName'
                 }
                 sentryAppender(GrailsLogbackSentryAppender, ref('raven'), pluginConfig)
+
+                if (pluginConfig.logHttpRequest) {
+                    ravenServletRequestListener(RavenServletRequestListener)
+                }
 
                 if (pluginConfig?.disableMDCInsertingServletFilter != true) {
                     log.info 'Activating MDCInsertingServletFilter'
