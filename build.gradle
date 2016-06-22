@@ -11,6 +11,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.jfrog.artifactory' version '4.4.0'
+}
+
 version '7.3.0-SNAPSHOT'
 group 'org.grails.plugins'
 
