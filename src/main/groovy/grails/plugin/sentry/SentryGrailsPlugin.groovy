@@ -7,13 +7,15 @@ import com.getsentry.raven.DefaultRavenFactory
 import com.getsentry.raven.dsn.Dsn
 import com.getsentry.raven.servlet.RavenServletRequestListener
 import grails.plugins.Plugin
+import groovy.util.logging.Commons
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.embedded.FilterRegistrationBean
 
+@Commons
 class SentryGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = '3.0.1 > *'
+    def grailsVersion = '3.0.0 > *'
 
     def title = 'Sentry Plugin'
     def author = 'Benoit Hediard'
