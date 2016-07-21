@@ -44,6 +44,14 @@ class SentryGrailsPlugin extends Plugin {
                     ravenServletRequestListener(RavenServletRequestListener)
                 }
 
+                if (pluginConfig.springSecurityUser) {
+                    springSecurityUserEventBuilderHelper(SpringSecurityUserEventBuilderHelper) {
+                        springSecurityService = ref('springSecurityService')
+                        if (pluginConfig.logHttpRequest)
+                            ravenServletRequestListener = ref('ravenServletRequestListener')
+                    }
+                }
+
                 if (pluginConfig?.disableMDCInsertingServletFilter != true) {
                     log.info 'Activating MDCInsertingServletFilter'
                     mdcInsertingServletFilter(FilterRegistrationBean) {
@@ -59,6 +67,11 @@ class SentryGrailsPlugin extends Plugin {
 
     void doWithApplicationContext() {
         def configLoggers = grailsApplication.config.grails?.plugin?.sentry?.loggers
+
+        if (grailsApplication.config.grails?.plugin?.sentry?.springSecurityUser) {
+            def springSecurityUserEventBuilderHelper = applicationContext.springSecurityUserEventBuilderHelper
+            applicationContext.raven.addBuilderHelper(springSecurityUserEventBuilderHelper)
+        }
 
         GrailsLogbackSentryAppender appender = applicationContext.sentryAppender
         if (appender) {
