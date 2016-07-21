@@ -76,6 +76,8 @@ grails:
                 MODULE3: [com.company.services.module3, com.company.controllers.module3]
             logClassName: true
             logHttpRequest: true
+            disableMDCInsertingServletFilter: true
+            springSecurityUser: true
             priorities: 
                 HIGH: [java.lang, com.microsoft.sqlserver.jdbc.SQLServerException]
                 MID: [com.company.exception]
