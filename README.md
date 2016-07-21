@@ -75,6 +75,7 @@ grails:
                 MODULE2: [com.company.services.module2, com.company.controllers.module2]
                 MODULE3: [com.company.services.module3, com.company.controllers.module3]
             logClassName: true
+            logHttpRequest: true
             priorities: 
                 HIGH: [java.lang, com.microsoft.sqlserver.jdbc.SQLServerException]
                 MID: [com.company.exception]
