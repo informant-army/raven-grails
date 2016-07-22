@@ -139,3 +139,7 @@ raven?.sendEvent(eventBuilder.build())
 # Bugs
 
 To report any bug, please use the project [Issues](http://github.com/agorapulse/grails-raven/issues) section on GitHub.
+
+## Maintained by
+
+[![Agorapulse](https://cloud.githubusercontent.com/assets/139017/17053391/4a44735a-5034-11e6-8e72-9f4b7139d7e0.png)](https://www.agorapulse.com/) **&** [![Scentbird](https://cloud.githubusercontent.com/assets/139017/17053392/4a4f343e-5034-11e6-95c9-f6371f7848f1.png)](https://www.scentbird.com/)
