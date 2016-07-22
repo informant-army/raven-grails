@@ -22,7 +22,7 @@ repositories {
 }
 dependencies {
     ...
-    compile("org.grails.plugins:sentry:7.3.0") {
+    compile("org.grails.plugins:sentry:7.4.0") {
         exclude module: 'logback-core' // To avoid a dependency clash (org.springframework.boot:spring-boot-starter-logging use 1.1.5 instead of 1.1.7)
     }
 }
@@ -129,6 +129,7 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2016-07-22 **V7.4.0** : upgrade Sentry java lib to 7.4.0, better logging and support for Spring Security Core , thanks to [donbeave](https://github.com/donbeave) PR
 * 2016-06-22 **V7.3.0** : upgrade Sentry java lib to 7.3.0
 * 2016-05-03 **V7.2.1** : upgrade Sentry java lib to 7.2.1
 * 2016-04-12 **V7.1.0.1** : minor update
