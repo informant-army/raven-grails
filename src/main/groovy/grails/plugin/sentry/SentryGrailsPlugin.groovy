@@ -7,13 +7,15 @@ import com.getsentry.raven.DefaultRavenFactory
 import com.getsentry.raven.dsn.Dsn
 import com.getsentry.raven.servlet.RavenServletRequestListener
 import grails.plugins.Plugin
+import groovy.util.logging.Commons
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.embedded.FilterRegistrationBean
 
+@Commons
 class SentryGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = '3.0.1 > *'
+    def grailsVersion = '3.0.0 > *'
 
     def title = 'Sentry Plugin'
     def author = 'Benoit Hediard'
@@ -42,6 +44,14 @@ class SentryGrailsPlugin extends Plugin {
                     ravenServletRequestListener(RavenServletRequestListener)
                 }
 
+                if (pluginConfig.springSecurityUser) {
+                    springSecurityUserEventBuilderHelper(SpringSecurityUserEventBuilderHelper) {
+                        springSecurityService = ref('springSecurityService')
+                        if (pluginConfig.logHttpRequest)
+                            ravenServletRequestListener = ref('ravenServletRequestListener')
+                    }
+                }
+
                 if (pluginConfig?.disableMDCInsertingServletFilter != true) {
                     log.info 'Activating MDCInsertingServletFilter'
                     mdcInsertingServletFilter(FilterRegistrationBean) {
@@ -57,6 +67,11 @@ class SentryGrailsPlugin extends Plugin {
 
     void doWithApplicationContext() {
         def configLoggers = grailsApplication.config.grails?.plugin?.sentry?.loggers
+
+        if (grailsApplication.config.grails?.plugin?.sentry?.springSecurityUser) {
+            def springSecurityUserEventBuilderHelper = applicationContext.springSecurityUserEventBuilderHelper
+            applicationContext.raven.addBuilderHelper(springSecurityUserEventBuilderHelper)
+        }
 
         GrailsLogbackSentryAppender appender = applicationContext.sentryAppender
         if (appender) {

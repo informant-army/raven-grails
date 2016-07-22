@@ -48,6 +48,11 @@ class GrailsLogbackSentryAppender extends SentryAppender {
                 .withLevel(formatLevel(event.getLevel()))
                 .withExtra(THREAD_NAME, event.getThreadName())
 
+        // remove trash from message
+        if (event.getFormattedMessage().contains(' Stacktrace follows:')) {
+            eventBuilder.withMessage(event.getFormattedMessage().replace(' Stacktrace follows:', ''))
+        }
+
         if (event.argumentArray) {
             eventBuilder.withSentryInterface(
                     new MessageInterface(event.message, formatMessageParameters(event.argumentArray))
@@ -60,7 +65,12 @@ class GrailsLogbackSentryAppender extends SentryAppender {
             eventBuilder.withSentryInterface(new StackTraceInterface(event.getCallerData()))
         }
 
-        if (event.getCallerData().length > 0) {
+        // override "grails.plugin.sentry.GrailsLogbackSentryAppender" as culprit by more concrete message
+        if (event.throwableProxy != null && event.throwableProxy.cause != null &&
+                event.throwableProxy.cause.stackTraceElementProxyArray.length > 0) {
+            eventBuilder.withCulprit(event.throwableProxy.cause.stackTraceElementProxyArray[0].toString())
+            eventBuilder.withLogger(event.throwableProxy.cause.stackTraceElementProxyArray[0].stackTraceElement.className)
+        } else if (event.getCallerData().length > 0) {
             eventBuilder.withCulprit(event.getCallerData()[0])
         } else {
             eventBuilder.withCulprit(event.getLoggerName())
