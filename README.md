@@ -136,9 +136,19 @@ raven?.sendEvent(eventBuilder.build())
 * 2016-04-06 **V7.1.0** : upgrade Sentry java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`)
 * 2015-08-31 **V6.0.0** : initial release for Grails 3.x
 
-# Bugs
+## Bugs
 
-To report any bug, please use the project [Issues](http://github.com/agorapulse/grails-raven/issues) section on GitHub.
+To report any bug, please use the project [Issues](https://github.com/agorapulse/grails-raven/issues/new) section on GitHub.
+
+## Contributing
+
+Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/agorapulse/grails-raven/compare/).
+
+## License
+
+Copyright © 2016 Alan Rafael Fachini, authors, and contributors. All rights reserved.
+
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Maintained by
 
