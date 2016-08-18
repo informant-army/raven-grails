@@ -78,6 +78,10 @@ grails:
             logHttpRequest: true
             disableMDCInsertingServletFilter: true
             springSecurityUser: true
+            springSecurityUserProperties:
+                id: 'id'
+                email: 'emailAddress'
+                username: 'login'
             priorities: 
                 HIGH: [java.lang, com.microsoft.sqlserver.jdbc.SQLServerException]
                 MID: [com.company.exception]

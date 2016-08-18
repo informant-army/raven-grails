@@ -68,6 +68,11 @@ class GrailsLogbackSentryAppender extends SentryAppender {
             eventBuilder.withMessage(event.getFormattedMessage().replace(' Stacktrace follows:', ''))
         }
 
+        // remove trash from message
+        if (event.getFormattedMessage().trim().equals('Full Stack Trace:')) {
+            eventBuilder.withMessage(event.getFormattedMessage().trim().replace('Full Stack Trace:', ''))
+        }
+
         if (event.argumentArray) {
             eventBuilder.withSentryInterface(
                     new MessageInterface(event.message, formatMessageParameters(event.argumentArray))

@@ -18,6 +18,7 @@ package grails.plugin.sentry
 import com.getsentry.raven.event.EventBuilder
 import com.getsentry.raven.event.helper.EventBuilderHelper
 import com.getsentry.raven.event.interfaces.UserInterface
+import grails.util.Holders
 
 import javax.servlet.http.HttpServletRequest
 
@@ -38,22 +39,41 @@ class SpringSecurityUserEventBuilderHelper implements EventBuilderHelper {
 
     @Override
     void helpBuildingEvent(EventBuilder eventBuilder) {
-        def currentUser = springSecurityService?.getCurrentUser()
+        def isLoggedIn = springSecurityService?.isLoggedIn()
 
-        if (currentUser) {
-            def SpringSecurityUtils = Class.forName('grails.plugin.springsecurity.SpringSecurityUtils')
+        if (isLoggedIn) {
+            def principal = springSecurityService.getPrincipal()
 
-            def securityConfig = SpringSecurityUtils.securityConfig
+            if (principal != null && principal != 'anonymousUser') {
+                def sentryConfig = Holders.config.grails?.plugin?.sentry
 
-            String usernamePropertyName = securityConfig.userLookup.usernamePropertyName
-            String emailPropertyName = securityConfig.userLookup.emailPropertyName
+                String idPropertyName = 'id'
+                String emailPropertyName = null
+                String usernamePropertyName = 'username'
 
-            def id = currentUser.id?.toString()
-            String username = currentUser[usernamePropertyName]
-            String ipAddress = getIpAddress(ravenServletRequestListener?.getServletRequest())
-            String email = emailPropertyName ? currentUser[emailPropertyName] : null
-            UserInterface userInterface = new UserInterface(id, username, ipAddress, email)
-            eventBuilder.withSentryInterface(userInterface, true)
+                if (sentryConfig?.springSecurityUserProperties &&
+                        sentryConfig?.springSecurityUserProperties instanceof Map) {
+                    if (sentryConfig.springSecurityUserProperties.id &&
+                            sentryConfig.springSecurityUserProperties.id instanceof String) {
+                        idPropertyName = sentryConfig.springSecurityUserProperties.id
+                    }
+                    if (sentryConfig.springSecurityUserProperties.email &&
+                            sentryConfig.springSecurityUserProperties.email instanceof String) {
+                        emailPropertyName = sentryConfig.springSecurityUserProperties.email
+                    }
+                    if (sentryConfig.springSecurityUserProperties.username &&
+                            sentryConfig.springSecurityUserProperties.username instanceof String) {
+                        usernamePropertyName = sentryConfig.springSecurityUserProperties.username
+                    }
+                }
+
+                def id = principal[idPropertyName].toString()
+                String username = principal[usernamePropertyName].toString()
+                String ipAddress = getIpAddress(ravenServletRequestListener?.getServletRequest())
+                String email = emailPropertyName ? principal[emailPropertyName].toString() : null
+                UserInterface userInterface = new UserInterface(id, username, ipAddress, email)
+                eventBuilder.withSentryInterface(userInterface, true)
+            }
         }
     }
 
