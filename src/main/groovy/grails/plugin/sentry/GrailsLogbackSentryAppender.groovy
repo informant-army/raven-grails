@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Alan Rafael Fachini, authors, and contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package grails.plugin.sentry
 
 import ch.qos.logback.classic.Level
@@ -51,6 +66,11 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         // remove trash from message
         if (event.getFormattedMessage().contains(' Stacktrace follows:')) {
             eventBuilder.withMessage(event.getFormattedMessage().replace(' Stacktrace follows:', ''))
+        }
+
+        // remove trash from message
+        if (event.getFormattedMessage().trim().equals('Full Stack Trace:')) {
+            eventBuilder.withMessage(event.getFormattedMessage().trim().replace('Full Stack Trace:', ''))
         }
 
         if (event.argumentArray) {
