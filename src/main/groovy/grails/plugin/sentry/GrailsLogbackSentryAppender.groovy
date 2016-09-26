@@ -30,10 +30,12 @@ class GrailsLogbackSentryAppender extends SentryAppender {
     static defaultLoggingLevels = [Level.ERROR, Level.WARN]
 
     def config
+    String release
 
-    GrailsLogbackSentryAppender(Raven raven, config) {
+    GrailsLogbackSentryAppender(Raven raven, config, String release = '') {
         super(raven)
         this.config = config
+        this.release = release
     }
 
     @Override
@@ -62,6 +64,7 @@ class GrailsLogbackSentryAppender extends SentryAppender {
                 .withLogger(event.getLoggerName())
                 .withLevel(formatLevel(event.getLevel()))
                 .withExtra(THREAD_NAME, event.getThreadName())
+                .withRelease(release)
 
         // remove trash from message
         if (event.getFormattedMessage().contains(' Stacktrace follows:')) {

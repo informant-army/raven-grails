@@ -50,7 +50,7 @@ class SentryGrailsPlugin extends Plugin {
             if (pluginConfig?.dsn) {
                 log.info 'Sentry config found, creating Sentry client and corresponding Logback appender'
                 ravenFactory(DefaultRavenFactory)
-                raven(ravenFactory: 'createRavenInstance', new Dsn(pluginConfig.dsn)) { bean ->
+                raven(ravenFactory: 'createRavenInstance', new Dsn(pluginConfig.dsn), grailsApplication.metadata['info.app.version']) { bean ->
                     bean.autowire = 'byName'
                 }
                 sentryAppender(GrailsLogbackSentryAppender, ref('raven'), pluginConfig)
