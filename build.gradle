@@ -71,7 +71,7 @@ dependencies {
     testCompile 'org.grails:grails-plugin-testing'
 
     // Raven java
-    compile 'com.getsentry.raven:raven-logback:7.6.0'
+    compile 'com.getsentry.raven:raven-logback:7.7.0'
 }
 
 task wrapper(type: Wrapper) {
