@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 buildscript {
-    ext {
-        grailsVersion = project.grailsVersion
-    }
     repositories {
         mavenLocal()
         maven { url 'https://repo.grails.org/grails/core' }
@@ -37,11 +34,6 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.grails.grails-plugin'
 apply plugin: 'org.grails.grails-plugin-publish'
-
-ext {
-    grailsVersion = project.grailsVersion
-    gradleWrapperVersion = project.gradleWrapperVersion
-}
 
 repositories {
     mavenLocal()
@@ -72,10 +64,6 @@ dependencies {
 
     // Raven java
     compile 'com.getsentry.raven:raven-logback:7.7.0'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = gradleWrapperVersion
 }
 
 grailsPublish {
