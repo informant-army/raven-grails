@@ -63,7 +63,7 @@ dependencies {
     testCompile 'org.grails:grails-plugin-testing'
 
     // Raven java
-    compile 'com.getsentry.raven:raven-logback:7.7.0'
+    compile 'com.getsentry.raven:raven-logback:7.7.1'
 }
 
 grailsPublish {
