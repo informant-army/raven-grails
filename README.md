@@ -22,7 +22,7 @@ repositories {
 }
 dependencies {
     ...
-    compile("org.grails.plugins:sentry:7.7.1")
+    compile("org.grails.plugins:sentry:7.8.0")
 }
 ```
 
@@ -131,6 +131,7 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2016-10-19 **V7.8.0** : upgrade Sentry java lib to 7.8.0
 * 2016-10-10 **V7.7.1** : upgrade Sentry java lib to 7.7.1
 * 2016-09-27 **V7.7.0.1** : bug fix
 * 2016-09-26 **V7.7.0** : upgrade Sentry java lib to 7.7.0, release support added to events
