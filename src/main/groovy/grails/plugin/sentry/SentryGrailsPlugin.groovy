@@ -47,6 +47,12 @@ class SentryGrailsPlugin extends Plugin {
     Closure doWithSpring() {
         { ->
             def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
+
+            if (config.containsKey('active') && !config.active) {
+                log.warn "Raven disabled"
+                return
+            }
+
             if (pluginConfig?.dsn) {
                 log.info 'Sentry config found, creating Sentry client and corresponding Logback appender'
                 ravenFactory(DefaultRavenFactory)
@@ -81,9 +87,15 @@ class SentryGrailsPlugin extends Plugin {
     }
 
     void doWithApplicationContext() {
-        def configLoggers = grailsApplication.config.grails?.plugin?.sentry?.loggers
+        def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
 
-        if (grailsApplication.config.grails?.plugin?.sentry?.springSecurityUser) {
+        if (config.containsKey('active') && !config.active) {
+            return
+        }
+
+        def configLoggers = pluginConfig?.loggers
+
+        if (pluginConfig?.springSecurityUser) {
             def springSecurityUserEventBuilderHelper = applicationContext.springSecurityUserEventBuilderHelper
             applicationContext.raven.addBuilderHelper(springSecurityUserEventBuilderHelper)
         }
