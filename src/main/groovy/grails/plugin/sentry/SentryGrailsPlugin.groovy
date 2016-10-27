@@ -48,7 +48,7 @@ class SentryGrailsPlugin extends Plugin {
         { ->
             def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
 
-            if (config.containsKey('active') && !config.active) {
+            if (pluginConfig.containsKey('active') && !pluginConfig.active) {
                 log.warn "Raven disabled"
                 return
             }
@@ -89,7 +89,7 @@ class SentryGrailsPlugin extends Plugin {
     void doWithApplicationContext() {
         def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
 
-        if (config.containsKey('active') && !config.active) {
+        if (pluginConfig.containsKey('active') && !pluginConfig.active) {
             return
         }
 
