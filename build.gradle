@@ -27,7 +27,7 @@ plugins {
     id 'com.jfrog.artifactory' version '4.4.0'
 }
 
-version '7.8.0.1'
+version '7.8.0.2'
 group 'org.grails.plugins'
 
 apply plugin: 'eclipse'
@@ -68,7 +68,7 @@ dependencies {
 
 grailsPublish {
     userOrg = 'agorapulse'
-    githubSlug = 'agorapulse/grails-raven'
+    githubSlug = 'agorapulse/grails-sentry'
     license {
         name = 'Apache-2.0'
     }
