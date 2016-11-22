@@ -24,6 +24,7 @@ import com.getsentry.raven.event.interfaces.ExceptionInterface
 import com.getsentry.raven.event.interfaces.MessageInterface
 import com.getsentry.raven.event.interfaces.StackTraceInterface
 import com.getsentry.raven.logback.SentryAppender
+import grails.util.Environment
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
@@ -117,6 +118,12 @@ class GrailsLogbackSentryAppender extends SentryAppender {
 
         for (Map.Entry<String, String> tagEntry : tags.entrySet()) {
             eventBuilder.withTag(tagEntry.key, tagEntry.value)
+        }
+
+        if (config.environment) {
+            eventBuilder.withEnvironment(config.environment)
+        } else {
+            eventBuilder.withEnvironment(Environment.current.name)
         }
 
         // Custom

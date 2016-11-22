@@ -65,6 +65,7 @@ grails:
     plugin:
         sentry:
             loggers: [LOGGER1, LOGGER2, LOGGER3]
+            environment: staging
             serverName: dev.server.com
             levels: [ERROR]
             tags: {tag1: val1,  tag2: val2, tag3: val3}
