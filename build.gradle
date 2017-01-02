@@ -1,0 +1,123 @@
+/*
+ * Copyright 2016 Alan Rafael Fachini, authors, and contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'https://repo.grails.org/grails/core' }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+    }
+}
+
+plugins {
+    id 'com.jfrog.artifactory' version '4.4.0'
+}
+
+version '7.8.0.2'
+group 'org.grails.plugins'
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.grails.grails-plugin'
+apply plugin: 'org.grails.grails-plugin-publish'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://repo.grails.org/grails/core' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-logging'
+    compile 'org.springframework.boot:spring-boot-autoconfigure'
+    compile 'org.grails:grails-core'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'org.grails:grails-dependencies'
+    compile 'org.grails:grails-web-boot'
+    console 'org.grails:grails-console'
+    profile "org.grails.profiles:web-plugin"
+    provided 'org.grails:grails-plugin-services'
+    provided 'org.grails:grails-plugin-domain-class'
+    testCompile 'org.grails:grails-plugin-testing'
+
+    // Raven java
+    compile 'com.getsentry.raven:raven-logback:7.8.0'
+}
+
+grailsPublish {
+    userOrg = 'agorapulse'
+    githubSlug = 'agorapulse/grails-sentry'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = 'sentry'
+    desc = 'Grails Sentry plugin'
+    developers = [benorama: 'Benoit Hediard']
+    portalUser = ''
+    portalPassword = ''
+}
+
+if (System.getenv('ARTIFACTORY_CONTEXT_URL')) {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                pom.withXml {
+                    def pomNode = asNode()
+                    pomNode.dependencyManagement.replaceNode {}
+
+                    // simply remove dependencies without a version
+                    // version-less dependencies are handled with dependencyManagement
+                    // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                    pomNode.dependencies.dependency.findAll {
+                        it.version.text().isEmpty()
+                    }.each {
+                        it.replaceNode {}
+                    }
+                }
+                from components.java
+                def descriptor =
+                        artifacts = ["build/libs/${rootProject.name}-${version}.jar", sourcesJar]
+
+            }
+        }
+    }
+    artifactory {
+        contextUrl = System.getenv('ARTIFACTORY_CONTEXT_URL')
+
+        publish {
+            defaults {
+                publications('mavenJava')
+                publishArtifacts = true
+                publishPom = true
+
+            }
+            repository {
+                repoKey = "${version.contains('SNAPSHOT') ? (System.getenv('ARTIFACTORY_SNAPSHOT_REPO_KEY') ?: 'plugins-snapshot-local') : (System.getenv('ARTIFACTORY_RELEASE_REPO_KEY') ?: 'plugins-release-local')}"
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: 'admin'
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: 'password'
+            }
+        }
+    }
+}

@@ -1,81 +1,110 @@
-# Raven-Grails
+Sentry Grails Plugin
+====================
 
 [![Build Status](https://secure.travis-ci.org/agorapulse/grails-raven.png?branch=master)](https://travis-ci.org/agorapulse/grails-raven)
+[![Download](https://api.bintray.com/packages/agorapulse/plugins/sentry/images/download.svg)](https://bintray.com/agorapulse/plugins/sentry/_latestVersion)
 
-Raven is a Grails client for integrating apps with [Sentry](http://www.getsentry.com). [Sentry](http://www.getsentry.com) is an event logging platform primarily focused on capturing and aggregating exceptions.
+# Introduction
+
+Sentry plugin provides a Grails client for integrating apps with [Sentry](http://www.getsentry.com). 
+[Sentry](http://www.getsentry.com) is an event logging platform primarily focused on capturing and aggregating exceptions.
 
 It uses the official [Raven-java](https://github.com/getsentry/raven-java) client under the cover.
 
-## Installation
+# Installation
 
-Add the following to your `BuildConfig.groovy`:
+Declare the plugin dependency in the _build.gradle_ file, as shown here:
 
 ```groovy
-plugins {
-    compile ":raven:6.0.0.4"
+dependencies {
+    ...
+    compile("org.grails.plugins:sentry:7.8.0.2")
+    ...
 }
 ```
 
-## Configuration
+# Config
 
-You need to provide your Sentry DSN in `Config.groovy` file. The plugin will sent notifications to Sentry by default, if you want to disable notifications for an specific environment set the active option as false.
+Add your Sentry DSN to your _grails-app/conf/application.yml_.
+
+```yml
+grails:
+    plugin:
+        sentry:
+            dsn: https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}
+```
+
+The plugin will sent notifications to Sentry by default, if you want to disable notifications for an specific environment set the `active` option as false.
+
+```yml
+environments:
+    development:
+        grails:
+            plugin:
+                sentry:
+                    active: false
+    test:
+        grails:
+            plugin:
+                sentry:
+                    active: false
+```
+
 You can also configure the multiple logger to which you want to append the sentry appender.
 You can also set the server name, but it is recommended to don't set this configuration and let the plugin to resolve it.
-```groovy
-grails.plugin.raven.dsn = "https://{PUBLIC_KEY}:{SECRET_KEY}@app.getsentry.com/{PATH}{PROJECT_ID}"
 
-environments {
-    test {
-        grails.plugin.raven.active = false
-    }
-    development {
-        grails.plugin.raven.active = false
-    }
-    production {
-    }
-}
-```
 
-#### Optional configurations
-```
-grails.plugin.raven.loggers = ["LOGGER1","LOGGER2","LOGGER3"]
-grails.plugin.raven.serverName = "dev.server.com"
-grails.plugin.raven.levels = ["ERROR","FATAL"] // Defaults to ERROR,WARN,FATAL
+## Optional configurations
 
-grails.plugin.raven.tags = ["tag1" : "val1",
-                            "tag2" : "val2",
-                            "tag3" : "val3"]
-
-grails.plugin.raven.subsystems = ["MODULE1" : ["com.company.services.module1", "com.company.controllers.module1"],
-                                  "MODULE2" : ["com.company.services.module2", "com.company.controllers.module2"],
-                                  "MODULE3" : ["com.company.services.module3", "com.company.controllers.module3"]]
-
-grails.plugin.raven.logClassName = true
-grails.plugin.raven.priorities = ["HIGH" :  ["java.lang", "com.microsoft.sqlserver.jdbc.SQLServerException"],
-                                  "MID"  :  ["com.company.exception"],
-                                  "LOW"  :  ["java.io"]]
+```yml
+# Not tested on Grails 3 plugin...
+grails:
+    plugin:
+        sentry:
+            loggers: [LOGGER1, LOGGER2, LOGGER3]
+            environment: staging
+            serverName: dev.server.com
+            levels: [ERROR]
+            tags: {tag1: val1,  tag2: val2, tag3: val3}
+            subsystems: 
+                MODULE1: [com.company.services.module1, com.company.controllers.module1]
+                MODULE2: [com.company.services.module2, com.company.controllers.module2]
+                MODULE3: [com.company.services.module3, com.company.controllers.module3]
+            logClassName: true
+            logHttpRequest: true
+            disableMDCInsertingServletFilter: true
+            springSecurityUser: true
+            springSecurityUserProperties:
+                id: 'id'
+                email: 'emailAddress'
+                username: 'login'
+            priorities: 
+                HIGH: [java.lang, com.microsoft.sqlserver.jdbc.SQLServerException]
+                MID: [com.company.exception]
+                LOW: [java.io]
 ```
 
 Check [Raven-java](https://github.com/getsentry/raven-java) documentation to configure connection, protocol and async options in your DSN. If you are sending extra tags from the plugin for the exceptions, make sure to enable the corresponding tag on sentry tag settings for the particular project to see the tag as a filter on the exception stream on sentry.
 
 
-## Usage
+# Usage
 
-### Log4j Appender
+## Logback Appender
 
-The Log4j Appender is automatically configured by plugin, you have just to set enabled environments in `Config.groovy` file as shown in Configuration section.
+The Logback Appender is automatically configured by the plugin, you just have to set enabled environments as shown in Configuration section.
+
 All application exceptions will be logged on sentry by the appender.
-The appender is configured to log just the ERROR, WARN and FATAL levels.
-To log manually just use the `log.error` method.
+The appender is configured to log just the `ERROR` and `WARN` levels.
+To log manually just use the `log.error()` method.
 
-### ravenClient
+## ravenClient
 
 You also can use `raven` client to sent info messages to Sentry:
 
 ```groovy
-import net.kencochrane.raven.Raven
-import net.kencochrane.raven.event.Event
-import net.kencochrane.raven.event.EventBuilder
+import com.getsentry.raven.Raven
+import com.getsentry.raven.event.Event
+import com.getsentry.raven.event.EventBuilder
 
 Raven raven // To inject Spring bean raven client in your controllers or services
 
@@ -100,23 +129,34 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
-* 2015-03-19 **V6.0.0.4** : additional config options (thanks to [Anuj Kulkarni](https://github.com/anujku)) and versioning aligned to java lib
-* 2015-03-11 **V6.1.3** : additional config options (thanks to [Anuj Kulkarni](https://github.com/anujku))
-* 2015-02-17 **V6.1.2** : new config options (thanks to [Anuj Kulkarni](https://github.com/anujku))
-* 2015-02-12 **V6.1.1** : bug fix
-* 2015-02-12 **V6.1.0** : new setting to configure the logger to which you want to append the sentry appender (thanks to [Anuj Kulkarni](https://github.com/anujku))
-* 2015-01-29 **V6.0.0** : major refactor to use the official [Raven-java](https://github.com/getsentry/raven-java) client
+* 2016-11-22 **V7.8.0.2** : event environment support 
+* 2016-10-29 **V7.8.0.1** : minor bug fix, thanks to [donbeave](https://github.com/donbeave) PR
+* 2016-10-19 **V7.8.0** : upgrade Sentry java lib to 7.8.0
+* 2016-10-10 **V7.7.1** : upgrade Sentry java lib to 7.7.1
+* 2016-09-27 **V7.7.0.1** : bug fix
+* 2016-09-26 **V7.7.0** : upgrade Sentry java lib to 7.7.0, release support added to events
+* 2016-08-22 **V7.6.0** : upgrade Sentry java lib to 7.6.0, Spring Security integration improvements, thanks to [donbeave](https://github.com/donbeave) PR
+* 2016-07-22 **V7.4.0** : upgrade Sentry java lib to 7.4.0, better logging and support for Spring Security Core , thanks to [donbeave](https://github.com/donbeave) PR
+* 2016-06-22 **V7.3.0** : upgrade Sentry java lib to 7.3.0
+* 2016-05-03 **V7.2.1** : upgrade Sentry java lib to 7.2.1
+* 2016-04-12 **V7.1.0.1** : minor update
+* 2016-04-06 **V7.1.0** : upgrade Sentry java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`)
+* 2015-08-31 **V6.0.0** : initial release for Grails 3.x
 
-**WARNING**: Breaking change, since V6.0.0, if you were using the legacy groovy-based `ravenClient` spring bean, you must replace it with the new java-based `raven` client spring bean and `sendMessage` or `sendException` methods.
+## Bugs
 
-* 2014-03-08 **V0.5.8** : PR by jglapa for improved user data handling + bug fix
-* 2014-03-05 **V0.5.7** : PR by Logicopolis for async execution
-* 2014-01-03 **V0.5.4** : PR by benorama to remove commons codec Base64 dependency when building message body (for Grails 2.3 compatibility)
-* 2012-12-12 **V0.5** : refactoring
-* 2012-12-10 **V0.4** : sentryClient Spring Bean
-* 2012-11-23 **V0.2** : user interface + bug fixes
-* 2012-10-29 **V0.1** : initial release
+To report any bug, please use the project [Issues](https://github.com/agorapulse/grails-raven/issues/new) section on GitHub.
 
-# Bugs
+## Contributing
 
-To report any bug, please use the project [Issues](http://github.com/agorapulse/grails-raven/issues) section on GitHub.
+Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/agorapulse/grails-raven/compare/).
+
+## License
+
+Copyright © 2016 Alan Rafael Fachini, authors, and contributors. All rights reserved.
+
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## Maintained by
+
+[![Agorapulse](https://cloud.githubusercontent.com/assets/139017/17053391/4a44735a-5034-11e6-8e72-9f4b7139d7e0.png)](https://www.agorapulse.com/) **&** [![Scentbird](https://cloud.githubusercontent.com/assets/139017/17053392/4a4f343e-5034-11e6-95c9-f6371f7848f1.png)](https://www.scentbird.com/)
