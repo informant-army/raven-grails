@@ -24,7 +24,7 @@ import com.getsentry.raven.servlet.RavenServletRequestListener
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
 import org.slf4j.LoggerFactory
-import org.springframework.boot.context.embedded.FilterRegistrationBean
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 
 @Commons
 class SentryGrailsPlugin extends Plugin {
