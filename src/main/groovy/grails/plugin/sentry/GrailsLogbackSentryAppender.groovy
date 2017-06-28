@@ -25,10 +25,15 @@ import com.getsentry.raven.event.interfaces.MessageInterface
 import com.getsentry.raven.event.interfaces.StackTraceInterface
 import com.getsentry.raven.logback.SentryAppender
 import grails.util.Environment
+import grails.util.Metadata
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
     static defaultLoggingLevels = [Level.ERROR, Level.WARN]
+
+    private static final String TAG_GRAILS_APP_NAME = 'grails_app_name'
+    private static final String TAG_GRAILS_APP_VERSION = 'grails_app_version'
+    private static final String TAG_GRAILS_VERSION = 'grails_version'
 
     def config
     String release
@@ -119,6 +124,11 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         for (Map.Entry<String, String> tagEntry : tags.entrySet()) {
             eventBuilder.withTag(tagEntry.key, tagEntry.value)
         }
+
+        Metadata metadata = Metadata.current
+        eventBuilder.withTag(TAG_GRAILS_APP_NAME, metadata.getApplicationName())
+        eventBuilder.withTag(TAG_GRAILS_APP_VERSION, metadata.getApplicationVersion())
+        eventBuilder.withTag(TAG_GRAILS_VERSION, metadata.getGrailsVersion())
 
         if (config.environment) {
             eventBuilder.withEnvironment(config.environment)
