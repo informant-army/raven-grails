@@ -127,7 +127,6 @@ class GrailsLogbackSentryAppender extends SentryAppender {
 
         Metadata metadata = Metadata.current
         eventBuilder.withTag(TAG_GRAILS_APP_NAME, metadata.getApplicationName())
-        eventBuilder.withTag(TAG_GRAILS_APP_VERSION, metadata.getApplicationVersion())
         eventBuilder.withTag(TAG_GRAILS_VERSION, metadata.getGrailsVersion())
 
         if (config.environment) {
