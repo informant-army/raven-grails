@@ -32,7 +32,6 @@ class GrailsLogbackSentryAppender extends SentryAppender {
     static defaultLoggingLevels = [Level.ERROR, Level.WARN]
 
     private static final String TAG_GRAILS_APP_NAME = 'grails_app_name'
-    private static final String TAG_GRAILS_APP_VERSION = 'grails_app_version'
     private static final String TAG_GRAILS_VERSION = 'grails_version'
 
     def config
@@ -128,6 +127,12 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         Metadata metadata = Metadata.current
         eventBuilder.withTag(TAG_GRAILS_APP_NAME, metadata.getApplicationName())
         eventBuilder.withTag(TAG_GRAILS_VERSION, metadata.getGrailsVersion())
+
+        if (config.tags instanceof Map) {
+            config.tags.each { key, value ->
+                eventBuilder.withTag(key, value)
+            }
+        }
 
         if (config.environment) {
             eventBuilder.withEnvironment(config.environment)
