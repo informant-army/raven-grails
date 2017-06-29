@@ -18,6 +18,7 @@ package grails.plugin.sentry
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import grails.util.Environment
+import grails.util.Metadata
 import io.sentry.Sentry
 import io.sentry.SentryClient
 import io.sentry.event.EventBuilder
