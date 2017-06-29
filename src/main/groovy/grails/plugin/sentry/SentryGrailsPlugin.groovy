@@ -18,9 +18,9 @@ package grails.plugin.sentry
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.helpers.MDCInsertingServletFilter
-import com.getsentry.raven.DefaultRavenFactory
-import com.getsentry.raven.dsn.Dsn
-import com.getsentry.raven.servlet.RavenServletRequestListener
+import io.sentry.DefaultSentryClientFactory
+import io.sentry.dsn.Dsn
+import io.sentry.servlet.SentryServletRequestListener
 import grails.plugins.Plugin
 import groovy.util.logging.Commons
 import org.slf4j.LoggerFactory
@@ -37,39 +37,39 @@ class SentryGrailsPlugin extends Plugin {
     def authorEmail = 'ben@benorama.com'
     def description = 'Sentry Client for Grails'
     def profiles = ['web']
-    def documentation = 'http://github.com/agorapulse/grails-raven/blob/master/README.md'
+    def documentation = 'http://github.com/agorapulse/grails-sentry/blob/master/README.md'
 
     def license = 'APACHE'
     def developers = [[name: 'Benoit Hediard', email: 'ben@benorama.com']]
-    def issueManagement = [system: 'GitHub', url: 'http://github.com/agorapulse/grails-raven/issues']
-    def scm = [url: 'http://github.com/agorapulse/grails-raven']
+    def issueManagement = [system: 'GitHub', url: 'http://github.com/agorapulse/grails-sentry/issues']
+    def scm = [url: 'http://github.com/agorapulse/grails-sentry']
 
     Closure doWithSpring() {
         { ->
             def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
 
             if (pluginConfig.containsKey('active') && !pluginConfig.active) {
-                log.warn "Raven disabled"
+                log.warn "Sentry disabled"
                 return
             }
 
             if (pluginConfig?.dsn) {
                 log.info 'Sentry config found, creating Sentry client and corresponding Logback appender'
-                ravenFactory(DefaultRavenFactory)
-                raven(ravenFactory: 'createRavenInstance', new Dsn(pluginConfig.dsn.toString())) { bean ->
+                sentryFactory(DefaultSentryClientFactory)
+                sentryClient(sentryFactory: 'createSentryClient', new Dsn(pluginConfig.dsn.toString())) { bean ->
                     bean.autowire = 'byName'
                 }
-                sentryAppender(GrailsLogbackSentryAppender, ref('raven'), pluginConfig, grailsApplication.metadata['info.app.version'])
+                sentryAppender(GrailsLogbackSentryAppender, pluginConfig, grailsApplication.metadata['info.app.version'])
 
                 if (pluginConfig.logHttpRequest) {
-                    ravenServletRequestListener(RavenServletRequestListener)
+                    sentryServletRequestListener(SentryServletRequestListener)
                 }
 
                 if (pluginConfig.springSecurityUser) {
                     springSecurityUserEventBuilderHelper(SpringSecurityUserEventBuilderHelper) {
                         springSecurityService = ref('springSecurityService')
                         if (pluginConfig.logHttpRequest)
-                            ravenServletRequestListener = ref('ravenServletRequestListener')
+                            sentryServletRequestListener = ref('sentryServletRequestListener')
                     }
                 }
 
@@ -81,7 +81,7 @@ class SentryGrailsPlugin extends Plugin {
                     }
                 }
             } else {
-                log.warn "Raven config not found, add 'grails.plugin.sentry.dsn' to your config to enable Sentry client"
+                log.warn "Sentry config not found, add 'grails.plugin.sentry.dsn' to your config to enable Sentry client"
             }
         }
     }
@@ -97,7 +97,7 @@ class SentryGrailsPlugin extends Plugin {
 
         if (pluginConfig?.springSecurityUser) {
             def springSecurityUserEventBuilderHelper = applicationContext.springSecurityUserEventBuilderHelper
-            applicationContext.raven.addBuilderHelper(springSecurityUserEventBuilderHelper)
+            applicationContext.sentryClient.addBuilderHelper(springSecurityUserEventBuilderHelper)
         }
 
         GrailsLogbackSentryAppender appender = applicationContext.sentryAppender
