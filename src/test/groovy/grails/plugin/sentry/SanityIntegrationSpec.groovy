@@ -4,7 +4,7 @@ import grails.test.mixin.integration.Integration
 import spock.lang.Specification
 
 @Integration
-class SanityInegrationSpec extends Specification {
+class SanityIntegrationSpec extends Specification {
 
     def sentryAppender
     def sentryClient
