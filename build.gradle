@@ -27,7 +27,7 @@ plugins {
     id 'com.jfrog.artifactory' version '4.4.0'
 }
 
-version ravenLogbackVersion
+version "1${sentryLogbackVersion}"
 group 'org.grails.plugins'
 
 apply plugin: 'eclipse'
@@ -60,10 +60,12 @@ dependencies {
     profile "org.grails.profiles:web-plugin"
     provided 'org.grails:grails-plugin-services'
     provided 'org.grails:grails-plugin-domain-class'
-    testCompile 'org.grails:grails-plugin-testing'
 
-    // Raven java
-    compile "com.getsentry.raven:raven-logback:$ravenLogbackVersion"
+    compile "io.sentry:sentry-logback:${sentryLogbackVersion}"
+
+    testCompile 'org.grails:grails-plugin-testing'
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+
 }
 
 grailsPublish {

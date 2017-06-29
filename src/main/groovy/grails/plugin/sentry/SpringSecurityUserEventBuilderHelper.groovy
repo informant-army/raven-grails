@@ -15,10 +15,10 @@
  */
 package grails.plugin.sentry
 
-import com.getsentry.raven.event.EventBuilder
-import com.getsentry.raven.event.helper.EventBuilderHelper
-import com.getsentry.raven.event.interfaces.UserInterface
 import grails.util.Holders
+import io.sentry.event.EventBuilder
+import io.sentry.event.helper.EventBuilderHelper
+import io.sentry.event.interfaces.UserInterface
 
 import javax.servlet.http.HttpServletRequest
 

@@ -18,7 +18,7 @@ Declare the plugin dependency in the _build.gradle_ file, as shown here:
 ```groovy
 dependencies {
     ...
-    compile("org.grails.plugins:sentry:7.8.1")
+    compile("org.grails.plugins:sentry:Sentry-1.2.0")
     ...
 }
 ```
@@ -61,6 +61,7 @@ You can also set the server name, but it is recommended to don't set this config
 grails:
     plugin:
         sentry:
+            dsn: https://foo:bar@api.sentry.io/123
             loggers: [LOGGER1, LOGGER2, LOGGER3]
             environment: staging
             serverName: dev.server.com

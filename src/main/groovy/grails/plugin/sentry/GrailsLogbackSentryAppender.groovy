@@ -17,15 +17,14 @@ package grails.plugin.sentry
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
-import com.getsentry.raven.Raven
-import com.getsentry.raven.event.Event
-import com.getsentry.raven.event.EventBuilder
-import com.getsentry.raven.event.interfaces.ExceptionInterface
-import com.getsentry.raven.event.interfaces.MessageInterface
-import com.getsentry.raven.event.interfaces.StackTraceInterface
-import com.getsentry.raven.logback.SentryAppender
 import grails.util.Environment
-import grails.util.Metadata
+import io.sentry.Sentry
+import io.sentry.SentryClient
+import io.sentry.event.EventBuilder
+import io.sentry.event.interfaces.ExceptionInterface
+import io.sentry.event.interfaces.MessageInterface
+import io.sentry.event.interfaces.StackTraceInterface
+import io.sentry.logback.SentryAppender
 
 class GrailsLogbackSentryAppender extends SentryAppender {
 
@@ -37,8 +36,8 @@ class GrailsLogbackSentryAppender extends SentryAppender {
     def config
     String release
 
-    GrailsLogbackSentryAppender(Raven raven, config, String release = '') {
-        super(raven)
+    GrailsLogbackSentryAppender(config, String release = '') {
+        super()
         this.config = config
         this.release = release
     }
@@ -62,65 +61,68 @@ class GrailsLogbackSentryAppender extends SentryAppender {
     }
 
     @Override
-    protected Event buildEvent(ILoggingEvent event) {
+    protected EventBuilder createEventBuilder(ILoggingEvent iLoggingEvent) {
         EventBuilder eventBuilder = new EventBuilder()
-                .withTimestamp(new Date(event.getTimeStamp()))
-                .withMessage(event.getFormattedMessage())
-                .withLogger(event.getLoggerName())
-                .withLevel(formatLevel(event.getLevel()))
-                .withExtra(THREAD_NAME, event.getThreadName())
+                .withSdkIntegration("logback")
+                .withTimestamp(new Date(iLoggingEvent.getTimeStamp()))
+                .withMessage(iLoggingEvent.getFormattedMessage())
+                .withLogger(iLoggingEvent.getLoggerName())
+                .withLevel(formatLevel(iLoggingEvent.getLevel()))
+                .withExtra(THREAD_NAME, iLoggingEvent.getThreadName())
                 .withRelease(release)
 
         // remove trash from message
-        if (event.getFormattedMessage().contains(' Stacktrace follows:')) {
-            eventBuilder.withMessage(event.getFormattedMessage().replace(' Stacktrace follows:', ''))
+        if (iLoggingEvent.getFormattedMessage().contains(' Stacktrace follows:')) {
+            eventBuilder.withMessage(iLoggingEvent.getFormattedMessage().replace(' Stacktrace follows:', ''))
         }
 
         // remove trash from message
-        if (event.getFormattedMessage().trim().equals('Full Stack Trace:')) {
-            eventBuilder.withMessage(event.getFormattedMessage().trim().replace('Full Stack Trace:', ''))
+        if (iLoggingEvent.getFormattedMessage().trim().equals('Full Stack Trace:')) {
+            eventBuilder.withMessage(iLoggingEvent.getFormattedMessage().trim().replace('Full Stack Trace:', ''))
         }
 
-        if (event.argumentArray) {
+        if (iLoggingEvent.argumentArray) {
             eventBuilder.withSentryInterface(
-                    new MessageInterface(event.message, formatMessageParameters(event.argumentArray))
+                    new MessageInterface(iLoggingEvent.message, formatMessageParameters(iLoggingEvent.argumentArray))
             )
         }
 
-        if (event.getThrowableProxy() != null) {
-            eventBuilder.withSentryInterface(new ExceptionInterface(extractExceptionQueue(event)))
-        } else if (event.getCallerData().length > 0) {
-            eventBuilder.withSentryInterface(new StackTraceInterface(event.getCallerData()))
+        if (iLoggingEvent.getThrowableProxy() != null) {
+            eventBuilder.withSentryInterface(new ExceptionInterface(extractExceptionQueue(iLoggingEvent)))
+        } else if (iLoggingEvent.getCallerData().length > 0) {
+            eventBuilder.withSentryInterface(new StackTraceInterface(iLoggingEvent.getCallerData()))
         }
 
         // override "grails.plugin.sentry.GrailsLogbackSentryAppender" as culprit by more concrete message
-        if (event.throwableProxy != null && event.throwableProxy.cause != null &&
-                event.throwableProxy.cause.stackTraceElementProxyArray.length > 0) {
-            eventBuilder.withCulprit(event.throwableProxy.cause.stackTraceElementProxyArray[0].toString())
-            eventBuilder.withLogger(event.throwableProxy.cause.stackTraceElementProxyArray[0].stackTraceElement.className)
-        } else if (event.getCallerData().length > 0) {
-            eventBuilder.withCulprit(event.getCallerData()[0])
+        if (iLoggingEvent.throwableProxy != null && iLoggingEvent.throwableProxy.cause != null &&
+                iLoggingEvent.throwableProxy.cause.stackTraceElementProxyArray.length > 0) {
+            eventBuilder.withCulprit(iLoggingEvent.throwableProxy.cause.stackTraceElementProxyArray[0].toString())
+            eventBuilder.withLogger(iLoggingEvent.throwableProxy.cause.stackTraceElementProxyArray[0].stackTraceElement.className)
+        } else if (iLoggingEvent.getCallerData().length > 0) {
+            eventBuilder.withCulprit(iLoggingEvent.getCallerData()[0])
         } else {
-            eventBuilder.withCulprit(event.getLoggerName())
+            eventBuilder.withCulprit(iLoggingEvent.getLoggerName())
         }
 
-        for (Map.Entry<String, String> contextEntry : event.loggerContextVO.propertyMap.entrySet()) {
+        for (Map.Entry<String, String> contextEntry : iLoggingEvent.loggerContextVO.propertyMap.entrySet()) {
             eventBuilder.withExtra(contextEntry.key, contextEntry.value)
         }
 
-        for (Map.Entry<String, String> mdcEntry : event.getMDCPropertyMap().entrySet()) {
-            if (extraTags.contains(mdcEntry.key)) {
-                eventBuilder.withTag(mdcEntry.key, mdcEntry.value)
+        SentryClient client = Sentry.storedClient
+
+        for (Map.Entry<String, String> mdcEntry : iLoggingEvent.getMDCPropertyMap().entrySet()) {
+            if (client.extraTags.contains(mdcEntry.key)) {
+                eventBuilder.withTag(mdcEntry.key, mdcEntry.key)
             } else {
-                eventBuilder.withExtra(mdcEntry.key, mdcEntry.value)
+                eventBuilder.withExtra(mdcEntry.key, mdcEntry.key)
             }
         }
 
-        if (event.marker) {
-            eventBuilder.withTag(LOGBACK_MARKER, event.marker.name)
+        if (iLoggingEvent.marker) {
+            eventBuilder.withTag(LOGBACK_MARKER, iLoggingEvent.marker.name)
         }
 
-        for (Map.Entry<String, String> tagEntry : tags.entrySet()) {
+        for (Map.Entry<String, String> tagEntry : client.tags.entrySet()) {
             eventBuilder.withTag(tagEntry.key, tagEntry.value)
         }
 
@@ -145,8 +147,7 @@ class GrailsLogbackSentryAppender extends SentryAppender {
             eventBuilder.withServerName(config.serverName)
         }
 
-        raven.runBuilderHelpers(eventBuilder)
-        return eventBuilder.build()
+        return eventBuilder
     }
 
 }
