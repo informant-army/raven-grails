@@ -130,19 +130,21 @@ raven?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
-* 2017-02-01 **V7.8.1** : upgrade Sentry java lib to 7.8.1
+* 2017-07-04 **V11.2.0** : upgrade Sentry java lib to 1.2.0 (which replaces the deprecated Raven java lib)
+* 2017-06-06 **V8.0.3** : upgrade Raven java lib to 8.0.3
+* 2017-02-01 **V7.8.1** : upgrade Raven java lib to 7.8.1
 * 2016-11-22 **V7.8.0.2** : event environment support 
 * 2016-10-29 **V7.8.0.1** : minor bug fix, thanks to [donbeave](https://github.com/donbeave) PR
-* 2016-10-19 **V7.8.0** : upgrade Sentry java lib to 7.8.0
-* 2016-10-10 **V7.7.1** : upgrade Sentry java lib to 7.7.1
+* 2016-10-19 **V7.8.0** : upgrade Raven java lib to 7.8.0
+* 2016-10-10 **V7.7.1** : upgrade Raven java lib to 7.7.1
 * 2016-09-27 **V7.7.0.1** : bug fix
-* 2016-09-26 **V7.7.0** : upgrade Sentry java lib to 7.7.0, release support added to events
-* 2016-08-22 **V7.6.0** : upgrade Sentry java lib to 7.6.0, Spring Security integration improvements, thanks to [donbeave](https://github.com/donbeave) PR
-* 2016-07-22 **V7.4.0** : upgrade Sentry java lib to 7.4.0, better logging and support for Spring Security Core , thanks to [donbeave](https://github.com/donbeave) PR
-* 2016-06-22 **V7.3.0** : upgrade Sentry java lib to 7.3.0
-* 2016-05-03 **V7.2.1** : upgrade Sentry java lib to 7.2.1
+* 2016-09-26 **V7.7.0** : upgrade Raven java lib to 7.7.0, release support added to events
+* 2016-08-22 **V7.6.0** : upgrade Raven java lib to 7.6.0, Spring Security integration improvements, thanks to [donbeave](https://github.com/donbeave) PR
+* 2016-07-22 **V7.4.0** : upgrade Raven java lib to 7.4.0, better logging and support for Spring Security Core , thanks to [donbeave](https://github.com/donbeave) PR
+* 2016-06-22 **V7.3.0** : upgrade Raven java lib to 7.3.0
+* 2016-05-03 **V7.2.1** : upgrade Raven java lib to 7.2.1
 * 2016-04-12 **V7.1.0.1** : minor update
-* 2016-04-06 **V7.1.0** : upgrade Sentry java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`)
+* 2016-04-06 **V7.1.0** : upgrade Raven java lib to 7.1.0, thanks to [donbeave](https://github.com/donbeave) PR (WARNING: Raven package has been renamed from `net.kencochrane.raven` to `com.getsentry.raven`)
 * 2015-08-31 **V6.0.0** : initial release for Grails 3.x
 
 ## Bugs
