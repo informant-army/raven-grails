@@ -18,6 +18,7 @@ package grails.plugin.sentry
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import grails.util.Environment
+import grails.util.Metadata
 import io.sentry.Sentry
 import io.sentry.SentryClient
 import io.sentry.event.EventBuilder
@@ -29,6 +30,9 @@ import io.sentry.logback.SentryAppender
 class GrailsLogbackSentryAppender extends SentryAppender {
 
     static defaultLoggingLevels = [Level.ERROR, Level.WARN]
+
+    private static final String TAG_GRAILS_APP_NAME = 'grails_app_name'
+    private static final String TAG_GRAILS_VERSION = 'grails_version'
 
     def config
     String release
@@ -121,6 +125,16 @@ class GrailsLogbackSentryAppender extends SentryAppender {
 
         for (Map.Entry<String, String> tagEntry : client.tags.entrySet()) {
             eventBuilder.withTag(tagEntry.key, tagEntry.value)
+        }
+
+        Metadata metadata = Metadata.current
+        eventBuilder.withTag(TAG_GRAILS_APP_NAME, metadata.getApplicationName())
+        eventBuilder.withTag(TAG_GRAILS_VERSION, metadata.getGrailsVersion())
+
+        if (config.tags instanceof Map) {
+            config.tags.each { key, value ->
+                eventBuilder.withTag(key, value)
+            }
         }
 
         if (config.environment) {
