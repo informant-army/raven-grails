@@ -103,29 +103,26 @@ To log manually just use the `log.error()` method.
 You also can use `raven` client to sent info messages to Sentry:
 
 ```groovy
-import com.getsentry.raven.Raven
-import com.getsentry.raven.event.Event
-import com.getsentry.raven.event.EventBuilder
+import io.sentry.SentryClient
+import io.sentry.event.Event
+import io.sentry.event.EventBuilder
+import io.sentry.event.interfaces.ExceptionInterface
 
-Raven raven // To inject Spring bean raven client in your controllers or services
+SentryClient sentryClient // To inject Spring bean raven client in your controllers or services
 
 // Send simple message
-raven?.sendMessage("some message")
+sentryClient?.sendMessage("some message")
 
 // Send exception
-raven?.sendException(new Exception("some exception"))
+sentryClient?.sendException(new Exception("some exception"))
 
 // Custom event
-EventBuilder eventBuilder = new EventBuilder(
-        message: "Hello from Raven!",
-        level: Event.Level.ERROR,
-        logger: TestController.class.name
-).addSentryInterface(
-        new ExceptionInterface(
-                new Exception("some exception")
-        )
-)
-raven?.sendEvent(eventBuilder.build())
+EventBuilder eventBuilder = new EventBuilder()
+           .withMessage("This is a test")
+           .withLevel(Event.Level.INFO)
+           .withLogger(MyClass.class.name)
+
+sentryClient?.sendEvent(eventBuilder.build())
 ```
 
 # Latest releases
