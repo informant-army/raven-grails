@@ -76,7 +76,7 @@ grailsPublish {
     }
     title = 'sentry'
     desc = 'Grails Sentry plugin'
-    developers = [benorama: 'Benoit Hediard', musketyr: 'Vladimir Orany']
+    developers = [benorama: 'Benoit Hediard', musketyr: 'Vladimir Orany', donbeave: 'Alexey Zhokhov']
     portalUser = ''
     portalPassword = ''
 }
