@@ -123,3 +123,7 @@ if (System.getenv('ARTIFACTORY_CONTEXT_URL')) {
         }
     }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}
