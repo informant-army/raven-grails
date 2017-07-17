@@ -19,6 +19,7 @@ import grails.util.Holders
 import io.sentry.event.EventBuilder
 import io.sentry.event.helper.EventBuilderHelper
 import io.sentry.event.interfaces.UserInterface
+import io.sentry.servlet.SentryServletRequestListener
 
 import javax.servlet.http.HttpServletRequest
 
@@ -35,7 +36,7 @@ class SpringSecurityUserEventBuilderHelper implements EventBuilderHelper {
                                      'rlnclientipaddr']
 
     def springSecurityService
-    def ravenServletRequestListener
+    SentryServletRequestListener sentryServletRequestListener
 
     @Override
     void helpBuildingEvent(EventBuilder eventBuilder) {
@@ -69,7 +70,7 @@ class SpringSecurityUserEventBuilderHelper implements EventBuilderHelper {
 
                 def id = principal[idPropertyName].toString()
                 String username = principal[usernamePropertyName].toString()
-                String ipAddress = getIpAddress(ravenServletRequestListener?.getServletRequest())
+                String ipAddress = getIpAddress(sentryServletRequestListener?.getServletRequest())
                 String email = emailPropertyName ? principal[emailPropertyName].toString() : null
                 UserInterface userInterface = new UserInterface(id, username, ipAddress, email)
                 eventBuilder.withSentryInterface(userInterface, true)
