@@ -85,7 +85,7 @@ grails:
                 LOW: [java.io]
 ```
 
-Check [Raven-java](https://github.com/getsentry/raven-java) documentation to configure connection, protocol and async options in your DSN. If you are sending extra tags from the plugin for the exceptions, make sure to enable the corresponding tag on sentry tag settings for the particular project to see the tag as a filter on the exception stream on sentry.
+Check [Sentry-java](https://github.com/getsentry/sentry-java) documentation to configure connection, protocol and async options in your DSN. If you are sending extra tags from the plugin for the exceptions, make sure to enable the corresponding tag on sentry tag settings for the particular project to see the tag as a filter on the exception stream on sentry.
 
 
 # Usage
@@ -98,9 +98,9 @@ All application exceptions will be logged on sentry by the appender.
 The appender is configured to log just the `ERROR` and `WARN` levels.
 To log manually just use the `log.error()` method.
 
-## ravenClient
+## sentryClient
 
-You also can use `raven` client to sent info messages to Sentry:
+You also can use `sentryClient` to sent info messages to Sentry:
 
 ```groovy
 import io.sentry.SentryClient
