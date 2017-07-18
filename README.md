@@ -4,6 +4,21 @@ Sentry Grails Plugin
 [![Build Status](https://secure.travis-ci.org/agorapulse/grails-raven.png?branch=master)](https://travis-ci.org/agorapulse/grails-raven)
 [![Download](https://api.bintray.com/packages/agorapulse/plugins/sentry/images/download.svg)](https://bintray.com/agorapulse/plugins/sentry/_latestVersion)
 
+**WARNING**
+
+Latest version of the plugin do not work (see issue #35).
+So it's recommended to use the legacy plugin, until this issue is solved:
+
+```groovy
+dependencies {
+    ...
+    compile("org.grails.plugins:sentry:8.0.3")
+    ...
+}
+```
+
+
+
 # Introduction
 
 Sentry plugin provides a Grails client for integrating apps with [Sentry](http://www.getsentry.com). 
