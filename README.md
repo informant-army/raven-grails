@@ -33,7 +33,7 @@ Declare the plugin dependency in the _build.gradle_ file, as shown here:
 ```groovy
 dependencies {
     ...
-    compile("org.grails.plugins:sentry:11.3.0")
+    compile("org.grails.plugins:sentry:11.3.0.1")
     ...
 }
 ```
