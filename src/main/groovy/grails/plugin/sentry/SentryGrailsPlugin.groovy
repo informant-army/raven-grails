@@ -23,6 +23,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Commons
 import io.sentry.DefaultSentryClientFactory
+import io.sentry.SentryClient
 import io.sentry.dsn.Dsn
 import io.sentry.servlet.SentryServletRequestListener
 import org.slf4j.LoggerFactory
@@ -46,8 +47,6 @@ class SentryGrailsPlugin extends Plugin {
     def developers = [[name: 'Benoit Hediard', email: 'ben@benorama.com'], [name: 'Alexey Zhokhov', email: 'alexey@zhokhov.com']]
     def issueManagement = [system: 'GitHub', url: 'http://github.com/agorapulse/grails-sentry/issues']
     def scm = [url: 'http://github.com/agorapulse/grails-sentry']
-
-    private SentryConfig savedConfig
 
     @CompileStatic(TypeCheckingMode.SKIP)
     Closure doWithSpring() {
@@ -92,27 +91,24 @@ class SentryGrailsPlugin extends Plugin {
         }
     }
 
-    @CompileStatic(TypeCheckingMode.SKIP)
     void doWithApplicationContext() {
-        def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
+        SentryConfig pluginConfig = getSentryConfig()
 
-        if (pluginConfig.containsKey('active') && !pluginConfig.active) {
+        if (!pluginConfig.active) {
             return
         }
 
-        def configLoggers = pluginConfig?.loggers
-
-        if (pluginConfig?.springSecurityUser) {
-            def springSecurityUserEventBuilderHelper = applicationContext.springSecurityUserEventBuilderHelper
-            applicationContext.sentryClient.addBuilderHelper(springSecurityUserEventBuilderHelper)
+        if (pluginConfig.springSecurityUser) {
+            def springSecurityUserEventBuilderHelper = applicationContext.getBean(SpringSecurityUserEventBuilderHelper)
+            def sentryClient = applicationContext.getBean(SentryClient)
+            sentryClient.addBuilderHelper(springSecurityUserEventBuilderHelper)
         }
 
-        GrailsLogbackSentryAppender appender = applicationContext.sentryAppender
+        GrailsLogbackSentryAppender appender = applicationContext.getBean(GrailsLogbackSentryAppender)
         if (appender) {
             LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory()
-            if (configLoggers) {
-                def loggers = configLoggers.tokenize(',')
-                loggers.each { String logger ->
+            if (pluginConfig.loggers) {
+                pluginConfig.loggers.each { String logger ->
                     loggerContext.getLogger(logger).addAppender(appender)
                 }
             } else {
@@ -125,15 +121,9 @@ class SentryGrailsPlugin extends Plugin {
 
     @CompileStatic(TypeCheckingMode.SKIP)
     SentryConfig getSentryConfig() {
-        if (savedConfig) {
-            return savedConfig
-        } else {
-            def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
+        def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
 
-            savedConfig = new SentryConfig(pluginConfig)
-
-            return savedConfig
-        }
+        new SentryConfig(pluginConfig)
     }
 
 }
