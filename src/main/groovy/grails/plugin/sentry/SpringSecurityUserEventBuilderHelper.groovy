@@ -16,6 +16,8 @@
 package grails.plugin.sentry
 
 import grails.util.Holders
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import io.sentry.event.EventBuilder
 import io.sentry.event.helper.EventBuilderHelper
 import io.sentry.event.interfaces.UserInterface
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletRequest
 /**
  * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
+@CompileStatic
 class SpringSecurityUserEventBuilderHelper implements EventBuilderHelper {
 
     static List<String> ipHeaders = ['X-Real-IP',
@@ -38,6 +41,7 @@ class SpringSecurityUserEventBuilderHelper implements EventBuilderHelper {
     def springSecurityService
     SentryServletRequestListener sentryServletRequestListener
 
+    @CompileStatic(TypeCheckingMode.SKIP)
     @Override
     void helpBuildingEvent(EventBuilder eventBuilder) {
         def isLoggedIn = springSecurityService?.isLoggedIn()

@@ -18,14 +18,17 @@ package grails.plugin.sentry
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.helpers.MDCInsertingServletFilter
+import grails.plugins.Plugin
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
+import groovy.util.logging.Commons
 import io.sentry.DefaultSentryClientFactory
 import io.sentry.dsn.Dsn
 import io.sentry.servlet.SentryServletRequestListener
-import grails.plugins.Plugin
-import groovy.util.logging.Commons
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 
+@CompileStatic
 @Commons
 class SentryGrailsPlugin extends Plugin {
 
@@ -40,15 +43,18 @@ class SentryGrailsPlugin extends Plugin {
     def documentation = 'http://github.com/agorapulse/grails-sentry/blob/master/README.md'
 
     def license = 'APACHE'
-    def developers = [[name: 'Benoit Hediard', email: 'ben@benorama.com']]
+    def developers = [[name: 'Benoit Hediard', email: 'ben@benorama.com'], [name: 'Alexey Zhokhov', email: 'alexey@zhokhov.com']]
     def issueManagement = [system: 'GitHub', url: 'http://github.com/agorapulse/grails-sentry/issues']
     def scm = [url: 'http://github.com/agorapulse/grails-sentry']
 
+    private SentryConfig savedConfig
+
+    @CompileStatic(TypeCheckingMode.SKIP)
     Closure doWithSpring() {
         { ->
-            def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
+            SentryConfig pluginConfig = getSentryConfig()
 
-            if (pluginConfig.containsKey('active') && !pluginConfig.active) {
+            if (!pluginConfig.active) {
                 log.warn "Sentry disabled"
                 return
             }
@@ -73,7 +79,7 @@ class SentryGrailsPlugin extends Plugin {
                     }
                 }
 
-                if (pluginConfig?.disableMDCInsertingServletFilter != true) {
+                if (!pluginConfig.disableMDCInsertingServletFilter) {
                     log.info 'Activating MDCInsertingServletFilter'
                     mdcInsertingServletFilter(FilterRegistrationBean) {
                         filter = bean(MDCInsertingServletFilter)
@@ -86,6 +92,7 @@ class SentryGrailsPlugin extends Plugin {
         }
     }
 
+    @CompileStatic(TypeCheckingMode.SKIP)
     void doWithApplicationContext() {
         def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
 
@@ -113,6 +120,19 @@ class SentryGrailsPlugin extends Plugin {
             }
             appender.setContext(loggerContext)
             appender.start()
+        }
+    }
+
+    @CompileStatic(TypeCheckingMode.SKIP)
+    SentryConfig getSentryConfig() {
+        if (savedConfig) {
+            return savedConfig
+        } else {
+            def pluginConfig = grailsApplication.config.grails?.plugin?.sentry
+
+            savedConfig = new SentryConfig(pluginConfig)
+
+            return savedConfig
         }
     }
 
