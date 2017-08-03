@@ -15,7 +15,6 @@
  */
 package grails.plugin.sentry
 
-import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
 import grails.util.Environment
 import grails.util.Metadata
@@ -28,17 +27,16 @@ import io.sentry.event.interfaces.MessageInterface
 import io.sentry.event.interfaces.StackTraceInterface
 import io.sentry.logback.SentryAppender
 
+@CompileStatic
 class GrailsLogbackSentryAppender extends SentryAppender {
-
-    static List<Level> defaultLoggingLevels = [Level.ERROR, Level.WARN]
 
     private static final String TAG_GRAILS_APP_NAME = 'grails_app_name'
     private static final String TAG_GRAILS_VERSION = 'grails_version'
 
-    def config
+    SentryConfig config
     String release
 
-    GrailsLogbackSentryAppender(config, String release = '') {
+    GrailsLogbackSentryAppender(SentryConfig config, String release = '') {
         super()
         this.config = config
         this.release = release
@@ -46,18 +44,13 @@ class GrailsLogbackSentryAppender extends SentryAppender {
 
     @Override
     protected void append(ILoggingEvent event) {
-        if (config.containsKey('active') && !config.active) {
+        if (!config.active) {
             return
         }
 
-        def level = event.level
-        if (config.levels) {
-            // Getting the user defined logging levels and capitalizing them
-            def configLoggingLevels = config.levels.collect { Level.toLevel(it.replaceAll('\\s', '')) }
-            if (configLoggingLevels && configLoggingLevels.contains(level)) {
-                super.append(event)
-            }
-        } else if (defaultLoggingLevels.contains(level)) {
+        if (config.levels && config.levels.contains(event.level)) {
+            super.append(event)
+        } else if (SentryConfig.defaultLevels.contains(event.level)) {
             super.append(event)
         }
     }
@@ -65,7 +58,7 @@ class GrailsLogbackSentryAppender extends SentryAppender {
     @Override
     protected EventBuilder createEventBuilder(ILoggingEvent iLoggingEvent) {
         EventBuilder eventBuilder = new EventBuilder()
-                .withSdkIntegration("logback")
+                .withSdkIntegration('logback')
                 .withTimestamp(new Date(iLoggingEvent.getTimeStamp()))
                 .withMessage(iLoggingEvent.getFormattedMessage())
                 .withLogger(iLoggingEvent.getLoggerName())
@@ -113,10 +106,10 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         SentryClient client = Sentry.storedClient
 
         for (Map.Entry<String, String> mdcEntry : iLoggingEvent.getMDCPropertyMap().entrySet()) {
-            if (client.extraTags.contains(mdcEntry.key)) {
-                eventBuilder.withTag(mdcEntry.key, mdcEntry.key)
+            if (client.mdcTags.contains(mdcEntry.key)) {
+                eventBuilder.withTag(mdcEntry.key, mdcEntry.value)
             } else {
-                eventBuilder.withExtra(mdcEntry.key, mdcEntry.key)
+                eventBuilder.withExtra(mdcEntry.key, mdcEntry.value)
             }
         }
 
@@ -132,8 +125,8 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         eventBuilder.withTag(TAG_GRAILS_APP_NAME, metadata.getApplicationName())
         eventBuilder.withTag(TAG_GRAILS_VERSION, metadata.getGrailsVersion())
 
-        if (config.tags instanceof Map) {
-            config.tags.each { key, value ->
+        if (config.tags) {
+            config.tags.each { String key, String value ->
                 eventBuilder.withTag(key, value)
             }
         }
