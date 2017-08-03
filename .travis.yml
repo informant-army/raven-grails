@@ -9,7 +9,7 @@ env:
     secure: XL9/o7bgWnDauhd5m6NML6svcia1CFNPMeodexZtmlGvh/GiG+XFueWKwCVHeJM9nDGRt+O9laqryU+D0mPTnAv6iV9tKK+TUbr8KeBLTgHyazZ5ACuRs2ztS7H05t9WDB53OegUrFZ7fdEVuxvotDi8DfqtXcT/u1lA9zaUMRw=
 
 script:
-- "./gradlew clean assemble --stacktrace"
+- "./gradlew clean test assemble --stacktrace"
 
 after_success:
 - "./travis-publish.sh"
