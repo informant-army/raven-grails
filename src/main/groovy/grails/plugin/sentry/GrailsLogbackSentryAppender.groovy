@@ -16,6 +16,8 @@
 package grails.plugin.sentry
 
 import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.status.ErrorStatus
+import ch.qos.logback.core.status.Status
 import grails.util.Environment
 import grails.util.Metadata
 import groovy.transform.CompileStatic
@@ -145,4 +147,12 @@ class GrailsLogbackSentryAppender extends SentryAppender {
         return eventBuilder
     }
 
+    @Override
+    void addStatus(Status status) {
+        if (status instanceof ErrorStatus) {
+            // this error is otherwise completely swallowed
+            status.throwable?.printStackTrace()
+        }
+        super.addStatus(status)
+    }
 }
