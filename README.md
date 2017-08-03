@@ -1,22 +1,8 @@
 Sentry Grails Plugin
 ====================
 
-[![Build Status](https://secure.travis-ci.org/agorapulse/grails-raven.png?branch=master)](https://travis-ci.org/agorapulse/grails-raven)
+[![Build Status](https://secure.travis-ci.org/agorapulse/grails-sentry.png?branch=master)](https://travis-ci.org/agorapulse/grails-sentry)
 [![Download](https://api.bintray.com/packages/agorapulse/plugins/sentry/images/download.svg)](https://bintray.com/agorapulse/plugins/sentry/_latestVersion)
-
-**WARNING**
-
-Latest version of the plugin do not work (see issue #35).
-So it's recommended to use the legacy plugin, until this issue is solved:
-
-```groovy
-dependencies {
-    ...
-    compile("org.grails.plugins:sentry:8.0.3")
-    ...
-}
-```
-
 
 
 # Introduction
@@ -33,7 +19,7 @@ Declare the plugin dependency in the _build.gradle_ file, as shown here:
 ```groovy
 dependencies {
     ...
-    compile("org.grails.plugins:sentry:11.3.0.1")
+    compile("org.grails.plugins:sentry:11.4.0")
     ...
 }
 ```
@@ -142,6 +128,7 @@ sentryClient?.sendEvent(eventBuilder.build())
 
 # Latest releases
 
+* 2017-08-03 **V11.4.0** : upgrade Sentry java lib to 1.4.0 + bug fix, thanks to [donbeave](https://github.com/donbeave) PR #37
 * 2017-07-17 **V11.3.0** : upgrade Sentry java lib to 1.3.0 + bug fix, thanks to [donbeave](https://github.com/donbeave) PR #34
 * 2017-07-04 **V11.2.0** : upgrade Sentry java lib to 1.2.0 (which replaces the deprecated Raven java lib)
 * 2017-06-06 **V8.0.3** : upgrade Raven java lib to 8.0.3
