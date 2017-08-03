@@ -23,6 +23,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Commons
 import io.sentry.DefaultSentryClientFactory
+import io.sentry.Sentry
 import io.sentry.SentryClient
 import io.sentry.dsn.Dsn
 import io.sentry.servlet.SentryServletRequestListener
@@ -116,6 +117,12 @@ class SentryGrailsPlugin extends Plugin {
             }
             appender.setContext(loggerContext)
             appender.start()
+        }
+
+        SentryClient client = applicationContext.getBean(SentryClient)
+        if (client) {
+            // override any created by default
+            Sentry.setStoredClient(client)
         }
     }
 
